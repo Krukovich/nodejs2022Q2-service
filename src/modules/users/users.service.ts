@@ -50,7 +50,6 @@ export class UsersService {
   }
 
   deleteUser(id: IUser['id']): IUser[] {
-    console.log(id);
     return this.users.filter((user: IUser) => user.id !== id);
   }
 }
