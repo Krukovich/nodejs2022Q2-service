@@ -5,7 +5,7 @@ import { FIRST_VERSION } from '../../../constants';
 
 @Injectable()
 export class UsersService {
-  private readonly users: IUser[] = [];
+  private users: IUser[] = [];
   constructor() {
     this.users = [];
   }
@@ -18,15 +18,21 @@ export class UsersService {
     return this.users.find((user) => user.id === id);
   }
 
-  createUser(user: { login: IUser['login']; password: IUser['password'] }) {
-    this.users.push({
+  createUser(user: {
+    login: IUser['login'];
+    password: IUser['password'];
+  }): IUser {
+    const newUser: IUser = {
       id: randomUUID(),
       login: user.login,
       password: user.password,
       createdAt: new Date().getMilliseconds(),
       updatedAt: new Date().getMilliseconds(),
       version: FIRST_VERSION,
-    });
+    };
+    this.users.push(newUser);
+
+    return newUser;
   }
 
   changeUser(
@@ -50,6 +56,6 @@ export class UsersService {
   }
 
   deleteUser(id: IUser['id']): IUser[] {
-    return this.users.filter((user: IUser) => user.id !== id);
+    return (this.users = this.users.filter((user: IUser) => user.id !== id));
   }
 }
