@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -33,9 +34,14 @@ export class UsersController {
 
   @Put(':id')
   changeUser(
-    @Param('id') id: string,
+    @Param('id') id: IUser['id'],
     @Body(new ValidationPipe()) changeUser: ChangeUserDto,
   ) {
     return this.usersService.changeUser(id, changeUser);
+  }
+
+  @Delete()
+  deleteUser(@Param(':id') id: IUser['id']) {
+    return this.usersService.deleteUser(id);
   }
 }
