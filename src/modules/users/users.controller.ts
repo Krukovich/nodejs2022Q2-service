@@ -3,6 +3,9 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpException,
+  HttpStatus,
   Param,
   Post,
   Put,
@@ -12,55 +15,95 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { ChangeUserDto } from './dto/change-user.dto';
 import { IUser } from './users.interface';
+import { comparePassword, uuidValidateV4 } from '../../../utils';
+import { EXCEPTION } from '../../../constants';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  //TODO
-  // Server should answer with status code 200 and all users records
   @Get()
   getAllUsers(): IUser[] {
     return this.usersService.getAllUsers();
   }
 
-  //TODO
-  // Server should answer with status code 200 and and record with id === userId if it exists
-  // Server should answer with status code 400 and corresponding message if userId is invalid (not uuid)
-  // Server should answer with status code 404 and corresponding message if record with id === userId doesn't exist
   @Get(':id')
   getUserById(@Param('id') id: IUser['id']): IUser {
-    return this.usersService.getUserById(id);
+    if (!uuidValidateV4(id)) {
+      throw new HttpException(
+        EXCEPTION.BAD_REQUEST.BAD_UUID,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    const user: IUser = this.usersService.getUserById(id);
+
+    if (!user) {
+      throw new HttpException(
+        EXCEPTION.BAD_REQUEST.NOT_FOUND,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return user;
   }
 
-  //TODO
-  // Server should answer with status code 201 and newly created record if request is valid
-  // Server should answer with status code 400 and corresponding message if request body does not contain required fields
   @Post()
-  createUser(@Body(new ValidationPipe()) createUsers: CreateUserDto): IUser {
-    return this.usersService.createUser(createUsers);
+  async createUser(
+    @Body(new ValidationPipe()) createUsers: CreateUserDto,
+  ): Promise<IUser> {
+    return await this.usersService.createUser(createUsers);
   }
 
-  //TODO
-  // Change only user password
-  // Server should answer with status code 200 and updated record if request is valid
-  // Server should answer with status code 400 and corresponding message if userId is invalid (not uuid)
-  // Server should answer with status code 404 and corresponding message if record with id === userId doesn't exist
-  // Server should answer with status code 403 and corresponding message if oldPassowrd is wrong
   @Put(':id')
-  changeUser(
+  async changeUser(
     @Param('id') id: IUser['id'],
     @Body(new ValidationPipe()) changeUser: ChangeUserDto,
-  ): IUser {
+  ): Promise<IUser> {
+    if (!uuidValidateV4(id)) {
+      throw new HttpException(
+        EXCEPTION.BAD_REQUEST.BAD_UUID,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const user: IUser = this.usersService.getUserById(id);
+
+    if (!user) {
+      throw new HttpException(
+        EXCEPTION.BAD_REQUEST.NOT_FOUND,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    if (!(await comparePassword(changeUser.oldPassword, user.password))) {
+      throw new HttpException(
+        EXCEPTION.FORBIDDEN.BAD_PASSWORD,
+        HttpStatus.FORBIDDEN,
+      );
+    }
+
     return this.usersService.changeUser(id, changeUser);
   }
 
-  //TODO
-  // Server should answer with status code 204 if the record is found and deleted
-  // Server should answer with status code 400 and corresponding message if userId is invalid (not uuid)
-  // Server should answer with status code 404 and corresponding message if record with id === userId doesn't exist
   @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
   deleteUser(@Param('id') id: IUser['id']) {
-    return this.usersService.deleteUser(id);
+    if (!uuidValidateV4(id)) {
+      throw new HttpException(
+        EXCEPTION.BAD_REQUEST.BAD_UUID,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const user: IUser = this.usersService.getUserById(id);
+
+    if (!user) {
+      throw new HttpException(
+        EXCEPTION.BAD_REQUEST.NOT_FOUND,
+        HttpStatus.NOT_FOUND,
+      );
+    } else {
+      this.usersService.deleteUser(id);
+    }
   }
 }

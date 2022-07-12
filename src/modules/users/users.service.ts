@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { randomUUID } from 'crypto';
+import { v4 as uuidv4 } from 'uuid';
 import { IUser } from './users.interface';
 import { FIRST_VERSION } from '../../../constants';
+import { getHashPassword } from '../../../utils';
 
 @Injectable()
 export class UsersService {
@@ -18,14 +19,14 @@ export class UsersService {
     return this.users.find((user) => user.id === id);
   }
 
-  createUser(user: {
+  async createUser(user: {
     login: IUser['login'];
     password: IUser['password'];
-  }): IUser {
+  }): Promise<IUser> {
     const newUser: IUser = {
-      id: randomUUID(),
+      id: uuidv4(),
       login: user.login,
-      password: user.password,
+      password: await getHashPassword(user.password),
       createdAt: new Date().getMilliseconds(),
       updatedAt: new Date().getMilliseconds(),
       version: FIRST_VERSION,
@@ -35,16 +36,16 @@ export class UsersService {
     return newUser;
   }
 
-  changeUser(
+  async changeUser(
     id: IUser['id'],
-    data: { login: IUser['login']; password: IUser['password'] },
-  ): IUser {
+    data: { oldPassword: IUser['password']; newPassword: IUser['password'] },
+  ): Promise<IUser> {
     let findUser: IUser;
+    const hashPassword = await getHashPassword(data.newPassword);
 
     this.users.forEach((user: IUser): void => {
       if (id === user.id) {
-        user.login = data.login;
-        user.password = data.password;
+        user.password = hashPassword;
         user.updatedAt = new Date().getMilliseconds();
         user.version += FIRST_VERSION;
 
@@ -55,7 +56,7 @@ export class UsersService {
     return findUser;
   }
 
-  deleteUser(id: IUser['id']): IUser[] {
-    return (this.users = this.users.filter((user: IUser) => user.id !== id));
+  deleteUser(id: IUser['id']): void {
+    this.users = this.users.filter((user: IUser) => user.id !== id);
   }
 }

@@ -1,9 +1,14 @@
-import { IsOptional } from 'class-validator';
+import { IsNotEmpty, IsString, Length } from 'class-validator';
+import { PASSWORD_LENGTH } from '../../../../constants';
 
 export class ChangeUserDto {
-  @IsOptional()
-  login: string;
+  @IsString()
+  @Length(PASSWORD_LENGTH)
+  @IsNotEmpty()
+  oldPassword: string;
 
-  @IsOptional()
-  password: string;
+  @IsString()
+  @Length(PASSWORD_LENGTH)
+  @IsNotEmpty()
+  newPassword: string;
 }
