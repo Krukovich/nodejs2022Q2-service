@@ -23,11 +23,13 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
+  @HttpCode(HttpStatus.OK)
   getAllUsers(): IUser[] {
     return this.usersService.getAllUsers();
   }
 
   @Get(':id')
+  @HttpCode(HttpStatus.OK)
   getUserById(@Param('id') id: IUser['id']): IUser {
     if (!uuidValidateV4(id)) {
       throw new HttpException(
@@ -48,6 +50,7 @@ export class UsersController {
   }
 
   @Post()
+  @HttpCode(HttpStatus.CREATED)
   async createUser(
     @Body(new ValidationPipe()) createUsers: CreateUserDto,
   ): Promise<IUser> {
@@ -55,6 +58,7 @@ export class UsersController {
   }
 
   @Put(':id')
+  @HttpCode(HttpStatus.OK)
   async changeUser(
     @Param('id') id: IUser['id'],
     @Body(new ValidationPipe()) changeUser: ChangeUserDto,
