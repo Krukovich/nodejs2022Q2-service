@@ -14,7 +14,7 @@ export class TrackService {
   }
 
   getTrackById(id: ITrack['id']): ITrack {
-    return this.tracks.find((user) => user.id === id);
+    return this.tracks.find((track: ITrack) => track.id === id);
   }
 
   createTrack(track: ITrack) {

@@ -1,6 +1,6 @@
 import { IsNumber, IsOptional, IsString, IsUUID } from 'class-validator';
 
-export class ChangeAlbumsDto {
+export class ChangeAlbumDto {
   @IsString()
   @IsOptional()
   name: string;

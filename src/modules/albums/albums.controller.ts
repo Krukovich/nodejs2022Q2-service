@@ -12,11 +12,11 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { AlbumsService } from './albums.service';
-import { IAlbums } from './albums.interface';
+import { IAlbum } from './albums.interface';
 import { uuidValidateV4 } from '../../../utils';
 import { EXCEPTION } from '../../../constants';
-import { CreateAlbumsDto } from './dto/create-albums.dto';
-import { ChangeAlbumsDto } from './dto/change-albums.dto';
+import { CreateAlbumDto } from './dto/create-album.dto';
+import { ChangeAlbumDto } from './dto/change-album.dto';
 
 @Controller('album')
 export class AlbumsController {
@@ -24,20 +24,20 @@ export class AlbumsController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  getAllAlbums(): IAlbums[] {
+  getAllAlbums(): IAlbum[] {
     return this.albumsService.getAllAlbums();
   }
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  getAlbumById(@Param('id') id: IAlbums['id']): IAlbums {
+  getAlbumById(@Param('id') id: IAlbum['id']): IAlbum {
     if (!uuidValidateV4(id)) {
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
         HttpStatus.BAD_REQUEST,
       );
     }
-    const album: IAlbums = this.albumsService.getAlbumById(id);
+    const album: IAlbum = this.albumsService.getAlbumById(id);
 
     if (!album) {
       throw new HttpException(
@@ -52,17 +52,17 @@ export class AlbumsController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   createAlbum(
-    @Body(new ValidationPipe()) createAlbum: CreateAlbumsDto,
-  ): IAlbums {
+    @Body(new ValidationPipe()) createAlbum: CreateAlbumDto,
+  ): IAlbum {
     return this.albumsService.createAlbum(createAlbum);
   }
 
   @Put(':id')
   @HttpCode(HttpStatus.OK)
   changeAlbum(
-    @Param('id') id: IAlbums['id'],
-    @Body(new ValidationPipe()) changeAlbums: ChangeAlbumsDto,
-  ): IAlbums {
+    @Param('id') id: IAlbum['id'],
+    @Body(new ValidationPipe()) changeAlbums: ChangeAlbumDto,
+  ): IAlbum {
     if (!uuidValidateV4(id)) {
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
@@ -70,7 +70,7 @@ export class AlbumsController {
       );
     }
 
-    const album: IAlbums = this.albumsService.getAlbumById(id);
+    const album: IAlbum = this.albumsService.getAlbumById(id);
 
     if (!album) {
       throw new HttpException(
@@ -84,7 +84,7 @@ export class AlbumsController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  deleteAlbum(@Param('id') id: IAlbums['id']) {
+  deleteAlbum(@Param('id') id: IAlbum['id']) {
     if (!uuidValidateV4(id)) {
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
@@ -92,7 +92,7 @@ export class AlbumsController {
       );
     }
 
-    const album: IAlbums = this.albumsService.getAlbumById(id);
+    const album: IAlbum = this.albumsService.getAlbumById(id);
 
     if (!album) {
       throw new HttpException(
