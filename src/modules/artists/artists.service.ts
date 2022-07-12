@@ -17,7 +17,7 @@ export class ArtistsService {
     return this.artists.find((user) => user.id === id);
   }
 
-  createArtist(artist: IArtist) {
+  createArtist(artist: { name: IArtist['name']; grammy: IArtist['grammy'] }) {
     const newArtis: IArtist = {
       id: uuidv4(),
       name: artist.name,

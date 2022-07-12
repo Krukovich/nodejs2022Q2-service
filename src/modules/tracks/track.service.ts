@@ -17,7 +17,12 @@ export class TrackService {
     return this.tracks.find((track: ITrack) => track.id === id);
   }
 
-  createTrack(track: ITrack) {
+  createTrack(track: {
+    name: ITrack['name'];
+    albumId: ITrack['albumId'];
+    artistId: ITrack['artistId'];
+    duration: ITrack['duration'];
+  }) {
     const newTrack: ITrack = {
       id: uuidv4(),
       name: track.name,

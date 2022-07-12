@@ -1,9 +1,6 @@
 import { IsNumber, IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class CreateTrackDto {
-  @IsUUID()
-  id: string;
-
   @IsString()
   name: string;
 
