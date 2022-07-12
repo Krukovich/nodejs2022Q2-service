@@ -1,4 +1,4 @@
 import { Controller } from '@nestjs/common';
 
-@Controller('albums')
+@Controller('album')
 export class AlbumsController {}
