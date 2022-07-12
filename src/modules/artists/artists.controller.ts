@@ -11,15 +11,12 @@ import {
   Put,
   ValidationPipe,
 } from '@nestjs/common';
-import { ITrack } from '../tracks/tracks.interface';
 import { uuidValidateV4 } from '../../../utils';
 import { EXCEPTION } from '../../../constants';
-import { CreateTrackDto } from '../tracks/dto/create-track.dto';
-import { ChangeTrackDto } from '../tracks/dto/change-track.dto';
 import { ArtistsService } from './artists.service';
 import { IArtist } from './artists.interface';
 import { CreateArtistDto } from './dto/create-artist.dto';
-import {ChangeArtistDto} from "./dto/change-artist.dto";
+import { ChangeArtistDto } from './dto/change-artist.dto';
 
 @Controller('artist')
 export class ArtistsController {

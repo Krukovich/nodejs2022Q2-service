@@ -14,7 +14,7 @@ import {
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { ChangeUserDto } from './dto/change-user.dto';
-import { IUser } from './users.interface';
+import { IResponseUser, IUser } from './users.interface';
 import { comparePassword, uuidValidateV4 } from '../../../utils';
 import { EXCEPTION } from '../../../constants';
 
@@ -53,7 +53,7 @@ export class UsersController {
   @HttpCode(HttpStatus.CREATED)
   async createUser(
     @Body(new ValidationPipe()) createUsers: CreateUserDto,
-  ): Promise<IUser> {
+  ): Promise<IResponseUser> {
     return await this.usersService.createUser(createUsers);
   }
 
@@ -62,7 +62,7 @@ export class UsersController {
   async changeUser(
     @Param('id') id: IUser['id'],
     @Body(new ValidationPipe()) changeUser: ChangeUserDto,
-  ): Promise<IUser> {
+  ): Promise<IResponseUser> {
     if (!uuidValidateV4(id)) {
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,

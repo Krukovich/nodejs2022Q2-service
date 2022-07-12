@@ -51,9 +51,7 @@ export class AlbumsController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  createAlbum(
-    @Body(new ValidationPipe()) createAlbum: CreateAlbumDto,
-  ): IAlbum {
+  createAlbum(@Body(new ValidationPipe()) createAlbum: CreateAlbumDto): IAlbum {
     return this.albumsService.createAlbum(createAlbum);
   }
 

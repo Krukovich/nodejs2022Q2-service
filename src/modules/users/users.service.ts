@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
-import { IUser } from './users.interface';
+import { IResponseUser, IUser } from './users.interface';
 import { FIRST_VERSION } from '../../../constants';
 import { getHashPassword } from '../../../utils';
 
@@ -22,7 +22,7 @@ export class UsersService {
   async createUser(user: {
     login: IUser['login'];
     password: IUser['password'];
-  }): Promise<IUser> {
+  }): Promise<IResponseUser> {
     const newUser: IUser = {
       id: uuidv4(),
       login: user.login,
@@ -33,13 +33,19 @@ export class UsersService {
     };
     this.users.push(newUser);
 
-    return newUser;
+    return {
+      id: newUser.id,
+      login: newUser.login,
+      createdAt: newUser.createdAt,
+      updatedAt: newUser.updatedAt,
+      version: newUser.version,
+    };
   }
 
   async changeUser(
     id: IUser['id'],
     data: { oldPassword: IUser['password']; newPassword: IUser['password'] },
-  ): Promise<IUser> {
+  ): Promise<IResponseUser> {
     let findUser: IUser;
     const hashPassword = await getHashPassword(data.newPassword);
 
@@ -53,7 +59,13 @@ export class UsersService {
       }
     });
 
-    return findUser;
+    return {
+      id: findUser.id,
+      login: findUser.login,
+      version: findUser.version,
+      createdAt: findUser.createdAt,
+      updatedAt: findUser.updatedAt,
+    };
   }
 
   deleteUser(id: IUser['id']): void {
