@@ -18,7 +18,7 @@ import { IUser } from './users.interface';
 import { comparePassword, uuidValidateV4 } from '../../../utils';
 import { EXCEPTION } from '../../../constants';
 
-@Controller('users')
+@Controller('user')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
