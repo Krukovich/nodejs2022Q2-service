@@ -2,7 +2,7 @@ import * as bcrypt from 'bcrypt';
 import { validate as uuidValidate, version as uuidVersion } from 'uuid';
 import { HASH_LEVEL, UUID_VERSION } from '../constants';
 
-export const uuidValidateV4 = (uuid): boolean => {
+export const uuidValidateV4 = (uuid: string): boolean => {
   return uuidValidate(uuid) && uuidVersion(uuid) === UUID_VERSION;
 };
 

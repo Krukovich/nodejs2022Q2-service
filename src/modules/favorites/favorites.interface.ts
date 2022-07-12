@@ -1,1 +1,5 @@
-export interface Favorites {}
+export interface IFavorites {
+  artists: string[];
+  albums: string[];
+  tracks: string[];
+}
