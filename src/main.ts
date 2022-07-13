@@ -15,7 +15,7 @@ async function bootstrap() {
   const document = parse(DOC_API);
 
   SwaggerModule.setup('doc', app, document);
-
+  //TODO ADD LOGIC FOR GET PORT FRO ENV FILE
   await app.listen(4000);
 }
 bootstrap();

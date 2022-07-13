@@ -18,7 +18,7 @@ export class UsersService {
   getUserById(id: IUser['id']): IUser {
     return this.users.find((user) => user.id === id);
   }
-  //TODO CHANGE DATE TO valueOf()
+
   async createUser(user: {
     login: IUser['login'];
     password: IUser['password'];
@@ -27,8 +27,8 @@ export class UsersService {
       id: uuidv4(),
       login: user.login,
       password: await getHashPassword(user.password),
-      createdAt: new Date().getMilliseconds(),
-      updatedAt: new Date().getMilliseconds(),
+      createdAt: new Date().valueOf(),
+      updatedAt: new Date().valueOf(),
       version: FIRST_VERSION,
     };
     this.users.push(newUser);
@@ -41,7 +41,7 @@ export class UsersService {
       version: newUser.version,
     };
   }
-  //TODO CHANGE DATE TO valueOf()
+
   async changeUser(
     id: IUser['id'],
     data: { oldPassword: IUser['password']; newPassword: IUser['password'] },
@@ -52,7 +52,7 @@ export class UsersService {
     this.users.forEach((user: IUser): void => {
       if (id === user.id) {
         user.password = hashPassword;
-        user.updatedAt = new Date().getMilliseconds();
+        user.updatedAt = new Date().valueOf();
         user.version += FIRST_VERSION;
 
         findUser = user;
