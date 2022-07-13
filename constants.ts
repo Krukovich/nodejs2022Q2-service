@@ -11,4 +11,7 @@ export const EXCEPTION = {
   FORBIDDEN: {
     BAD_PASSWORD: 'old password is wrong',
   },
+  UNPROCESSABLE_ENTITY: {
+    NOT_FOUND: 'can not record because it does not exist',
+  },
 };

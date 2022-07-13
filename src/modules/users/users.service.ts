@@ -18,7 +18,7 @@ export class UsersService {
   getUserById(id: IUser['id']): IUser {
     return this.users.find((user) => user.id === id);
   }
-
+  //TODO CHANGE DATE TO valueOf()
   async createUser(user: {
     login: IUser['login'];
     password: IUser['password'];
@@ -41,7 +41,7 @@ export class UsersService {
       version: newUser.version,
     };
   }
-
+  //TODO CHANGE DATE TO valueOf()
   async changeUser(
     id: IUser['id'],
     data: { oldPassword: IUser['password']; newPassword: IUser['password'] },
