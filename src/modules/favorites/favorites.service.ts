@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { IFavoritesResponse, ISearchFavorite } from './favorites.interface';
+import { IFavoritesResponse } from './favorites.interface';
 import { ITrack } from '../tracks/tracks.interface';
 import { IAlbum } from '../albums/albums.interface';
 import { IArtist } from '../artists/artists.interface';
 
 @Injectable()
 export class FavoritesService {
-  private readonly favorites: IFavoritesResponse;
+  private static favorites: IFavoritesResponse;
   constructor() {
-    this.favorites = {
+    FavoritesService.favorites = {
       artists: [],
       albums: [],
       tracks: [],
@@ -16,43 +16,39 @@ export class FavoritesService {
   }
 
   getAllFavorites(): IFavoritesResponse {
-    return this.favorites;
+    return FavoritesService.favorites;
   }
 
   createFavoritesTrack(track: ITrack): void {
-    this.favorites.tracks.push(track);
+    FavoritesService.favorites.tracks.push(track);
   }
 
   deleteFavoriteTrack(id: ITrack['id']): void {
-    this.favorites.tracks = this.favorites.tracks.filter(
-      (track: ITrack) => track.id !== id,
-    );
+    FavoritesService.favorites.tracks =
+      FavoritesService.favorites.tracks.filter(
+        (track: ITrack) => track.id !== id,
+      );
   }
 
   createFavoritesAlbum(album: IAlbum): void {
-    this.favorites.albums.push(album);
+    FavoritesService.favorites.albums.push(album);
   }
 
   deleteFavoriteAlbum(id: IAlbum['id']): void {
-    this.favorites.albums = this.favorites.albums.filter(
-      (album: IAlbum) => album.id !== id,
-    );
+    FavoritesService.favorites.albums =
+      FavoritesService.favorites.albums.filter(
+        (album: IAlbum) => album.id !== id,
+      );
   }
 
   createFavoritesArtist(artist: IArtist): void {
-    this.favorites.artists.push(artist);
+    FavoritesService.favorites.artists.push(artist);
   }
 
   deleteFavoriteArtist(id: IArtist['id']): void {
-    this.favorites.artists = this.favorites.artists.filter(
-      (artist: IArtist) => artist.id !== id,
-    );
-  }
-
-  searchFavorite(
-    favorite: ISearchFavorite,
-    id: IArtist['id'] | IAlbum['id'] | ITrack['id'],
-  ): boolean {
-    return this.favorites[favorite].find((fav) => fav.id === id);
+    FavoritesService.favorites.artists =
+      FavoritesService.favorites.artists.filter(
+        (artist: IArtist) => artist.id !== id,
+      );
   }
 }

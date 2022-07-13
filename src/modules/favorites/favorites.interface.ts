@@ -7,9 +7,3 @@ export interface IFavoritesResponse {
   albums: IAlbum[];
   tracks: ITrack[];
 }
-
-export enum ISearchFavorite {
-  'artists',
-  'albums',
-  'tracks',
-}
