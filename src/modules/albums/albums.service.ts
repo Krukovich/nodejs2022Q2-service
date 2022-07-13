@@ -26,7 +26,7 @@ export class AlbumsService {
       id: uuidv4(),
       name: album.name,
       year: album.year,
-      artistId: album.artistId,
+      artistId: album.artistId ? album.artistId : null,
     };
 
     this.albums.push(newAlbum);

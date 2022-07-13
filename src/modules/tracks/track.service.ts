@@ -26,8 +26,8 @@ export class TrackService {
     const newTrack: ITrack = {
       id: uuidv4(),
       name: track.name,
-      albumId: track.albumId,
-      artistId: track.artistId,
+      albumId: track.albumId ? track.albumId : null,
+      artistId: track.artistId ? track.artistId : null,
       duration: track.duration,
     };
 
