@@ -15,35 +15,35 @@ export class FavoritesService {
     };
   }
 
-  getAllFavorites() {
+  getAllFavorites(): IFavoritesRepsonse {
     return this.favorites;
   }
 
-  createFavoritesTrack(track: ITrack) {
+  createFavoritesTrack(track: ITrack): void {
     this.favorites.tracks.push(track);
   }
 
-  deleteFavoriteTrack(id: ITrack['id']) {
+  deleteFavoriteTrack(id: ITrack['id']): void {
     this.favorites.tracks = this.favorites.tracks.filter(
       (track: ITrack) => track.id !== id,
     );
   }
 
-  createFavoritesAlbum(album: IAlbum) {
+  createFavoritesAlbum(album: IAlbum): void {
     this.favorites.albums.push(album);
   }
 
-  deleteFavoriteAlbum(id: IAlbum['id']) {
+  deleteFavoriteAlbum(id: IAlbum['id']): void {
     this.favorites.albums = this.favorites.albums.filter(
       (album: IAlbum) => album.id !== id,
     );
   }
 
-  createFavoritesArtist(artist: IArtist) {
+  createFavoritesArtist(artist: IArtist): void {
     this.favorites.artists.push(artist);
   }
 
-  deleteFavoriteArtist(id: IArtist['id']) {
+  deleteFavoriteArtist(id: IArtist['id']): void {
     this.favorites.artists = this.favorites.artists.filter(
       (artist: IArtist) => artist.id !== id,
     );
