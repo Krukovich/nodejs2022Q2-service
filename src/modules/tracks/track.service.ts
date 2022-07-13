@@ -4,17 +4,18 @@ import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class TrackService {
-  private tracks: ITrack[] = [];
+  private static tracks: ITrack[] = [];
+
   constructor() {
-    this.tracks = [];
+    TrackService.tracks = [];
   }
 
   getAllTracks(): ITrack[] {
-    return this.tracks;
+    return TrackService.tracks;
   }
 
   getTrackById(id: ITrack['id']): ITrack {
-    return this.tracks.find((track: ITrack) => track.id === id);
+    return TrackService.tracks.find((track: ITrack) => track.id === id);
   }
 
   createTrack(track: {
@@ -31,7 +32,7 @@ export class TrackService {
       duration: track.duration,
     };
 
-    this.tracks.push(newTrack);
+    TrackService.tracks.push(newTrack);
 
     return newTrack;
   }
@@ -46,7 +47,7 @@ export class TrackService {
     },
   ) {
     let findIndex: number;
-    this.tracks.forEach((track: ITrack, index: number): void => {
+    TrackService.tracks.forEach((track: ITrack, index: number): void => {
       if (id === track.id) {
         track.name = data.name ? data.name : track.name;
         track.duration = data.duration ? data.duration : track.duration;
@@ -57,10 +58,12 @@ export class TrackService {
       }
     });
 
-    return this.tracks[findIndex];
+    return TrackService.tracks[findIndex];
   }
 
   deleteTrack(id: ITrack['id']): void {
-    this.tracks = this.tracks.filter((track: ITrack) => track.id !== id);
+    TrackService.tracks = TrackService.tracks.filter(
+      (track: ITrack) => track.id !== id,
+    );
   }
 }

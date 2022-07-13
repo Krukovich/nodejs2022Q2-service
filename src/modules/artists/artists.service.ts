@@ -4,17 +4,18 @@ import { IArtist } from './artists.interface';
 
 @Injectable()
 export class ArtistsService {
-  private artists: IArtist[] = [];
+  private static artists: IArtist[] = [];
+
   constructor() {
-    this.artists = [];
+    ArtistsService.artists = [];
   }
 
   getAllArtist(): IArtist[] {
-    return this.artists;
+    return ArtistsService.artists;
   }
 
   getArtistById(id: IArtist['id']): IArtist {
-    return this.artists.find((user) => user.id === id);
+    return ArtistsService.artists.find((user) => user.id === id);
   }
 
   createArtist(artist: { name: IArtist['name']; grammy: IArtist['grammy'] }) {
@@ -24,7 +25,7 @@ export class ArtistsService {
       grammy: artist.grammy,
     };
 
-    this.artists.push(newArtis);
+    ArtistsService.artists.push(newArtis);
 
     return newArtis;
   }
@@ -37,7 +38,7 @@ export class ArtistsService {
     },
   ) {
     let findIndex: number;
-    this.artists.forEach((artist: IArtist, index: number): void => {
+    ArtistsService.artists.forEach((artist: IArtist, index: number): void => {
       if (id === artist.id) {
         artist.name = data.name ? data.name : artist.name;
         artist.grammy = data.grammy ? data.grammy : artist.grammy;
@@ -46,10 +47,12 @@ export class ArtistsService {
       }
     });
 
-    return this.artists[findIndex];
+    return ArtistsService.artists[findIndex];
   }
 
   deleteArtist(id: IArtist['id']): void {
-    this.artists = this.artists.filter((artist: IArtist) => artist.id !== id);
+    ArtistsService.artists = ArtistsService.artists.filter(
+      (artist: IArtist) => artist.id !== id,
+    );
   }
 }

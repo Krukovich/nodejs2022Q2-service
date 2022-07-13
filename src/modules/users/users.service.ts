@@ -6,17 +6,18 @@ import { getHashPassword } from '../../../utils';
 
 @Injectable()
 export class UsersService {
-  private users: IUser[] = [];
+  private static users: IUser[] = [];
+
   constructor() {
-    this.users = [];
+    UsersService.users = [];
   }
 
   getAllUsers(): IUser[] {
-    return this.users;
+    return UsersService.users;
   }
 
   getUserById(id: IUser['id']): IUser {
-    return this.users.find((user) => user.id === id);
+    return UsersService.users.find((user) => user.id === id);
   }
 
   async createUser(user: {
@@ -31,7 +32,7 @@ export class UsersService {
       updatedAt: new Date().valueOf(),
       version: FIRST_VERSION,
     };
-    this.users.push(newUser);
+    UsersService.users.push(newUser);
 
     return {
       id: newUser.id,
@@ -49,7 +50,7 @@ export class UsersService {
     let findUser: IUser;
     const hashPassword = await getHashPassword(data.newPassword);
 
-    this.users.forEach((user: IUser): void => {
+    UsersService.users.forEach((user: IUser): void => {
       if (id === user.id) {
         user.password = hashPassword;
         user.updatedAt = new Date().valueOf();
@@ -69,6 +70,8 @@ export class UsersService {
   }
 
   deleteUser(id: IUser['id']): void {
-    this.users = this.users.filter((user: IUser) => user.id !== id);
+    UsersService.users = UsersService.users.filter(
+      (user: IUser) => user.id !== id,
+    );
   }
 }

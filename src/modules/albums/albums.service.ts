@@ -4,17 +4,18 @@ import { IAlbum } from './albums.interface';
 
 @Injectable()
 export class AlbumsService {
-  private albums: IAlbum[] = [];
+  private static albums: IAlbum[] = [];
+
   constructor() {
-    this.albums = [];
+    AlbumsService.albums = [];
   }
 
   getAllAlbums(): IAlbum[] {
-    return this.albums;
+    return AlbumsService.albums;
   }
 
   getAlbumById(id: IAlbum['id']): IAlbum {
-    return this.albums.find((user) => user.id === id);
+    return AlbumsService.albums.find((user) => user.id === id);
   }
 
   createAlbum(album: {
@@ -29,7 +30,7 @@ export class AlbumsService {
       artistId: album.artistId ? album.artistId : null,
     };
 
-    this.albums.push(newAlbum);
+    AlbumsService.albums.push(newAlbum);
 
     return newAlbum;
   }
@@ -43,7 +44,7 @@ export class AlbumsService {
     },
   ) {
     let findIndex: number;
-    this.albums.forEach((track: IAlbum, index: number): void => {
+    AlbumsService.albums.forEach((track: IAlbum, index: number): void => {
       if (id === track.id) {
         track.name = data.name ? data.name : track.name;
         track.year = data.artistId ? data.year : track.year;
@@ -52,10 +53,12 @@ export class AlbumsService {
       }
     });
 
-    return this.albums[findIndex];
+    return AlbumsService.albums[findIndex];
   }
 
   deleteAlbum(id: IAlbum['id']): void {
-    this.albums = this.albums.filter((album: IAlbum) => album.id !== id);
+    AlbumsService.albums = AlbumsService.albums.filter(
+      (album: IAlbum) => album.id !== id,
+    );
   }
 }
