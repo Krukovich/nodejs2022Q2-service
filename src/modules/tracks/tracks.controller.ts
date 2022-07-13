@@ -17,10 +17,14 @@ import { uuidValidateV4 } from '../../../utils';
 import { EXCEPTION } from '../../../constants';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { ChangeTrackDto } from './dto/change-track.dto';
+import { FavoritesService } from '../favorites/favorites.service';
 
 @Controller('track')
 export class TracksController {
-  constructor(private readonly trackService: TrackService) {}
+  constructor(
+    private readonly trackService: TrackService,
+    private readonly favoritesService: FavoritesService,
+  ) {}
 
   @Get()
   @HttpCode(HttpStatus.OK)
@@ -99,6 +103,7 @@ export class TracksController {
       );
     } else {
       this.trackService.deleteTrack(id);
+      this.favoritesService.deleteFavoriteTrack(id);
     }
   }
 }

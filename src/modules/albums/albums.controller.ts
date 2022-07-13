@@ -17,10 +17,14 @@ import { uuidValidateV4 } from '../../../utils';
 import { EXCEPTION } from '../../../constants';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { ChangeAlbumDto } from './dto/change-album.dto';
+import { FavoritesService } from '../favorites/favorites.service';
 
 @Controller('album')
 export class AlbumsController {
-  constructor(private readonly albumsService: AlbumsService) {}
+  constructor(
+    private readonly albumsService: AlbumsService,
+    private readonly favoritesService: FavoritesService,
+  ) {}
 
   @Get()
   @HttpCode(HttpStatus.OK)
@@ -99,6 +103,7 @@ export class AlbumsController {
       );
     } else {
       this.albumsService.deleteAlbum(id);
+      this.favoritesService.deleteFavoriteAlbum(id);
     }
   }
 }

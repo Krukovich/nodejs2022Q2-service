@@ -41,7 +41,7 @@ export class ArtistsService {
     ArtistsService.artists.forEach((artist: IArtist, index: number): void => {
       if (id === artist.id) {
         artist.name = data.name ? data.name : artist.name;
-        artist.grammy = data.grammy ? data.grammy : artist.grammy;
+        artist.grammy = data.grammy;
 
         findIndex = index;
       }
