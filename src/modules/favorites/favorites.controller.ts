@@ -8,7 +8,7 @@ import {
   Param,
   Post,
 } from '@nestjs/common';
-import { IFavoritesRepsonse } from './favorites.interface';
+import { IFavoritesResponse, ISearchFavorite } from './favorites.interface';
 import { FavoritesService } from './favorites.service';
 import { ITrack } from '../tracks/tracks.interface';
 import { TrackService } from '../tracks/track.service';
@@ -30,7 +30,7 @@ export class FavoritesController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  getAllFavorites(): IFavoritesRepsonse {
+  getAllFavorites(): IFavoritesResponse {
     return this.favoritesService.getAllFavorites();
   }
 
@@ -55,8 +55,7 @@ export class FavoritesController {
 
     return this.favoritesService.createFavoritesTrack(track);
   }
-  //TODO
-  // Server should answer with status code 404 and corresponding message if corresponding track is not favorite
+
   @Delete('track/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
   deleteFavoriteTrack(@Param('id') id: ITrack['id']) {
@@ -64,6 +63,13 @@ export class FavoritesController {
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
         HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    if (this.favoritesService.searchFavorite(ISearchFavorite.tracks, id)) {
+      throw new HttpException(
+        EXCEPTION.BAD_REQUEST.NOT_FOUND,
+        HttpStatus.NOT_FOUND,
       );
     }
 
@@ -92,8 +98,6 @@ export class FavoritesController {
     this.favoritesService.createFavoritesAlbum(album);
   }
 
-  //TODO
-  // Server should answer with status code 404 and corresponding message if corresponding album is not favorite
   @Delete('album/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
   deleteFavoritesAlbum(@Param('id') id: IAlbum['id']) {
@@ -101,6 +105,13 @@ export class FavoritesController {
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
         HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    if (this.favoritesService.searchFavorite(ISearchFavorite.albums, id)) {
+      throw new HttpException(
+        EXCEPTION.BAD_REQUEST.NOT_FOUND,
+        HttpStatus.NOT_FOUND,
       );
     }
 
@@ -129,8 +140,6 @@ export class FavoritesController {
     this.favoritesService.createFavoritesArtist(artist);
   }
 
-  //TODO
-  // Server should answer with status code 404 and corresponding message if corresponding artist is not favorite
   @Delete('artist/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
   deleteFavoritesArtist(@Param('id') id: IArtist['id']) {
@@ -138,6 +147,13 @@ export class FavoritesController {
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
         HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    if (this.favoritesService.searchFavorite(ISearchFavorite.artists, id)) {
+      throw new HttpException(
+        EXCEPTION.BAD_REQUEST.NOT_FOUND,
+        HttpStatus.NOT_FOUND,
       );
     }
 

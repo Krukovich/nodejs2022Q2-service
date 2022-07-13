@@ -5,8 +5,8 @@ export const HASH_LEVEL = 3;
 
 export const EXCEPTION = {
   BAD_REQUEST: {
-    BAD_UUID: 'user ID is invalid (not uuid)',
-    NOT_FOUND: 'user with this ID does not exist',
+    BAD_UUID: 'ID is invalid (not uuid)',
+    NOT_FOUND: 'with this ID does not exist',
   },
   FORBIDDEN: {
     BAD_PASSWORD: 'old password is wrong',

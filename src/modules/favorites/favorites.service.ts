@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { IFavoritesRepsonse } from './favorites.interface';
+import { IFavoritesResponse, ISearchFavorite } from './favorites.interface';
 import { ITrack } from '../tracks/tracks.interface';
 import { IAlbum } from '../albums/albums.interface';
 import { IArtist } from '../artists/artists.interface';
 
 @Injectable()
 export class FavoritesService {
-  private readonly favorites: IFavoritesRepsonse;
+  private readonly favorites: IFavoritesResponse;
   constructor() {
     this.favorites = {
       artists: [],
@@ -15,7 +15,7 @@ export class FavoritesService {
     };
   }
 
-  getAllFavorites(): IFavoritesRepsonse {
+  getAllFavorites(): IFavoritesResponse {
     return this.favorites;
   }
 
@@ -47,5 +47,12 @@ export class FavoritesService {
     this.favorites.artists = this.favorites.artists.filter(
       (artist: IArtist) => artist.id !== id,
     );
+  }
+
+  searchFavorite(
+    favorite: ISearchFavorite,
+    id: IArtist['id'] | IAlbum['id'] | ITrack['id'],
+  ): boolean {
+    return this.favorites[favorite].find((fav) => fav.id === id);
   }
 }
