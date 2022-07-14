@@ -1,8 +1,14 @@
-import { IsNumber, IsOptional, IsString, IsUUID } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  IsUUID,
+} from 'class-validator';
 
 export class ChangeTrackDto {
   @IsString()
-  @IsOptional()
+  @IsNotEmpty()
   name: string;
 
   @IsUUID()
@@ -14,6 +20,6 @@ export class ChangeTrackDto {
   albumId: string;
 
   @IsNumber()
-  @IsOptional()
+  @IsNotEmpty()
   duration: number;
 }

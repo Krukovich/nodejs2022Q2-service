@@ -24,7 +24,7 @@ export class UsersController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  getAllUsers(): IUser[] {
+  getAllUsers(): IResponseUser[] {
     return this.usersService.getAllUsers();
   }
 

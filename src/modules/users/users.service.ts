@@ -12,11 +12,14 @@ export class UsersService {
     UsersService.users = [];
   }
 
-  getAllUsers(): IUser[] {
+  getAllUsers(): IResponseUser[] {
     return UsersService.users.map((user: IUser) => {
-      delete user.password;
       return {
-        ...user,
+        id: user.id,
+        login: user.login,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+        version: user.version,
       };
     });
   }

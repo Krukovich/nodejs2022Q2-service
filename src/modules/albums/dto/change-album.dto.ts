@@ -1,12 +1,18 @@
-import { IsNumber, IsOptional, IsString, IsUUID } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  IsUUID,
+} from 'class-validator';
 
 export class ChangeAlbumDto {
   @IsString()
-  @IsOptional()
+  @IsNotEmpty()
   name: string;
 
   @IsNumber()
-  @IsOptional()
+  @IsNotEmpty()
   year: number;
 
   @IsUUID()
