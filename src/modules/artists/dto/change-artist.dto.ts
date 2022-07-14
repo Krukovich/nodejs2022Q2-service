@@ -1,15 +1,11 @@
-import { IsBoolean, IsOptional, IsString, IsUUID } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsString } from 'class-validator';
 
 export class ChangeArtistDto {
-  @IsUUID()
-  @IsOptional()
-  id: string;
-
   @IsString()
-  @IsOptional()
+  @IsNotEmpty()
   name: string;
 
   @IsBoolean()
-  @IsOptional()
+  @IsNotEmpty()
   grammy: boolean;
 }
