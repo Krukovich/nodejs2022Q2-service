@@ -8,7 +8,7 @@ import {
   Param,
   Post,
 } from '@nestjs/common';
-import { IFavoritesResponse } from './favorites.interface';
+import { IFavoritesResponse, ISearchFavorite } from './favorites.interface';
 import { FavoritesService } from './favorites.service';
 import { ITrack } from '../tracks/tracks.interface';
 import { TrackService } from '../tracks/track.service';
@@ -19,6 +19,7 @@ import { IArtist } from '../artists/artists.interface';
 import { uuidValidateV4 } from '../../../utils';
 import { EXCEPTION } from '../../../constants';
 
+//TODO ADD LOGIC FOR SHOW RESULT AFTER CREATE FAVORITES ARTIS ALBUMS TRACKS
 @Controller('favs')
 export class FavoritesController {
   constructor(
@@ -75,6 +76,13 @@ export class FavoritesController {
       );
     }
 
+    if (!this.favoritesService.searchInFavorites(ISearchFavorite.tracks, id)) {
+      throw new HttpException(
+        EXCEPTION.BAD_REQUEST.NOT_FOUND,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
     this.favoritesService.deleteFavoriteTrack(id);
   }
 
@@ -119,6 +127,13 @@ export class FavoritesController {
       );
     }
 
+    if (!this.favoritesService.searchInFavorites(ISearchFavorite.albums, id)) {
+      throw new HttpException(
+        EXCEPTION.BAD_REQUEST.NOT_FOUND,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
     this.favoritesService.deleteFavoriteAlbum(id);
   }
 
@@ -157,6 +172,13 @@ export class FavoritesController {
     const artist: IArtist = this.artistsService.getArtistById(id);
 
     if (!artist) {
+      throw new HttpException(
+        EXCEPTION.BAD_REQUEST.NOT_FOUND,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    if (!this.favoritesService.searchInFavorites(ISearchFavorite.artists, id)) {
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.NOT_FOUND,
         HttpStatus.NOT_FOUND,

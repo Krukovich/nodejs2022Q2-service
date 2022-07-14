@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { IFavoritesResponse } from './favorites.interface';
+import { IFavoritesResponse, ISearchFavorite } from './favorites.interface';
 import { ITrack } from '../tracks/tracks.interface';
 import { IAlbum } from '../albums/albums.interface';
 import { IArtist } from '../artists/artists.interface';
@@ -50,5 +50,14 @@ export class FavoritesService {
       FavoritesService.favorites.artists.filter(
         (artist: IArtist) => artist.id !== id,
       );
+  }
+
+  searchInFavorites(
+    favorite: ISearchFavorite,
+    id: IArtist['id'] | IAlbum['id'] | ITrack['id'],
+  ): boolean {
+    return !!(
+      FavoritesService.favorites[favorite] as Array<IArtist | IAlbum | ITrack>
+    ).find((fav) => fav.id === id);
   }
 }
