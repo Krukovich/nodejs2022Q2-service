@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { ITrack } from './tracks.interface';
 import { v4 as uuidv4 } from 'uuid';
+import { IArtist } from '../artists/artists.interface';
+import { IAlbum } from '../albums/albums.interface';
 
 @Injectable()
 export class TrackService {
@@ -65,5 +67,23 @@ export class TrackService {
     TrackService.tracks = TrackService.tracks.filter(
       (track: ITrack) => track.id !== id,
     );
+  }
+
+  setArtistIdIsNull(id: IArtist['id']): void {
+    TrackService.tracks = TrackService.tracks.map((track: ITrack) => {
+      return {
+        ...track,
+        artistId: track.artistId === id ? null : track.artistId,
+      };
+    });
+  }
+
+  setAlbumIdIsNull(id: IAlbum['id']): void {
+    TrackService.tracks = TrackService.tracks.map((track: ITrack) => {
+      return {
+        ...track,
+        albumId: track.albumId === id ? null : track.albumId,
+      };
+    });
   }
 }

@@ -18,12 +18,14 @@ import { EXCEPTION } from '../../../constants';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { ChangeAlbumDto } from './dto/change-album.dto';
 import { FavoritesService } from '../favorites/favorites.service';
+import { TrackService } from '../tracks/track.service';
 
 @Controller('album')
 export class AlbumsController {
   constructor(
     private readonly albumsService: AlbumsService,
     private readonly favoritesService: FavoritesService,
+    private readonly trackService: TrackService,
   ) {}
 
   @Get()
@@ -104,6 +106,7 @@ export class AlbumsController {
     } else {
       this.albumsService.deleteAlbum(id);
       this.favoritesService.deleteFavoriteAlbum(id);
+      this.trackService.setAlbumIdIsNull(id);
     }
   }
 }
