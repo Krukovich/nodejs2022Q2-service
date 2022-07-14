@@ -1,4 +1,4 @@
-export const PASSWORD_LENGTH = 8;
+export const PASSWORD_LENGTH = 4;
 export const FIRST_VERSION = 1;
 export const UUID_VERSION = 4;
 export const HASH_LEVEL = 3;
