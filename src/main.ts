@@ -6,6 +6,8 @@ import { readFile } from 'fs/promises';
 import { parse } from 'yaml';
 import { join } from 'path';
 
+const PORT: string | number = process.env.PORT || 4000;
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe());
@@ -15,7 +17,7 @@ async function bootstrap() {
   const document = parse(DOC_API);
 
   SwaggerModule.setup('doc', app, document);
-  //TODO ADD LOGIC FOR GET PORT FRO ENV FILE
-  await app.listen(4000);
+  await app.listen(PORT);
 }
-bootstrap();
+
+bootstrap().then(() => console.log('Have FUN!'));
