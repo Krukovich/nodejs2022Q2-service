@@ -13,7 +13,12 @@ export class UsersService {
   }
 
   getAllUsers(): IUser[] {
-    return UsersService.users;
+    return UsersService.users.map((user: IUser) => {
+      delete user.password;
+      return {
+        ...user,
+      };
+    });
   }
 
   getUserById(id: IUser['id']): IUser {
