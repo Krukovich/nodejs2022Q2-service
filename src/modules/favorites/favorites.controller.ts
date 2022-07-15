@@ -19,7 +19,6 @@ import { IArtist } from '../artists/artists.interface';
 import { uuidValidateV4 } from '../../../utils';
 import { EXCEPTION } from '../../../constants';
 
-//TODO ADD LOGIC FOR SHOW RESULT AFTER CREATE FAVORITES ARTIS ALBUMS TRACKS
 @Controller('favs')
 export class FavoritesController {
   constructor(
@@ -37,7 +36,7 @@ export class FavoritesController {
 
   @Post('track/:id')
   @HttpCode(HttpStatus.CREATED)
-  createFavoritesTrack(@Param('id') id: ITrack['id']) {
+  createFavoritesTrack(@Param('id') id: ITrack['id']): ITrack {
     if (!uuidValidateV4(id)) {
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
@@ -59,7 +58,7 @@ export class FavoritesController {
 
   @Delete('track/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  deleteFavoriteTrack(@Param('id') id: ITrack['id']) {
+  deleteFavoriteTrack(@Param('id') id: ITrack['id']): void {
     if (!uuidValidateV4(id)) {
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
@@ -88,7 +87,7 @@ export class FavoritesController {
 
   @Post('album/:id')
   @HttpCode(HttpStatus.CREATED)
-  createFavoritesAlbum(@Param('id') id: IAlbum['id']) {
+  createFavoritesAlbum(@Param('id') id: IAlbum['id']): IAlbum {
     if (!uuidValidateV4(id)) {
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
@@ -105,12 +104,12 @@ export class FavoritesController {
       );
     }
 
-    this.favoritesService.createFavoritesAlbum(album);
+    return this.favoritesService.createFavoritesAlbum(album);
   }
 
   @Delete('album/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  deleteFavoritesAlbum(@Param('id') id: IAlbum['id']) {
+  deleteFavoritesAlbum(@Param('id') id: IAlbum['id']): void {
     if (!uuidValidateV4(id)) {
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
@@ -139,7 +138,7 @@ export class FavoritesController {
 
   @Post('artist/:id')
   @HttpCode(HttpStatus.CREATED)
-  createFavoritesArtist(@Param('id') id: IArtist['id']) {
+  createFavoritesArtist(@Param('id') id: IArtist['id']): IArtist {
     if (!uuidValidateV4(id)) {
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
@@ -156,12 +155,12 @@ export class FavoritesController {
       );
     }
 
-    this.favoritesService.createFavoritesArtist(artist);
+    return this.favoritesService.createFavoritesArtist(artist);
   }
 
   @Delete('artist/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  deleteFavoritesArtist(@Param('id') id: IArtist['id']) {
+  deleteFavoritesArtist(@Param('id') id: IArtist['id']): void {
     if (!uuidValidateV4(id)) {
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
