@@ -19,8 +19,9 @@ export class FavoritesService {
     return FavoritesService.favorites;
   }
 
-  createFavoritesTrack(track: ITrack): void {
+  createFavoritesTrack(track: ITrack): ITrack {
     FavoritesService.favorites.tracks.push(track);
+    return track;
   }
 
   deleteFavoriteTrack(id: ITrack['id']): void {
@@ -30,8 +31,9 @@ export class FavoritesService {
       );
   }
 
-  createFavoritesAlbum(album: IAlbum): void {
+  createFavoritesAlbum(album: IAlbum): IAlbum {
     FavoritesService.favorites.albums.push(album);
+    return album;
   }
 
   deleteFavoriteAlbum(id: IAlbum['id']): void {
@@ -41,8 +43,9 @@ export class FavoritesService {
       );
   }
 
-  createFavoritesArtist(artist: IArtist): void {
+  createFavoritesArtist(artist: IArtist): IArtist {
     FavoritesService.favorites.artists.push(artist);
+    return artist;
   }
 
   deleteFavoriteArtist(id: IArtist['id']): void {
@@ -58,6 +61,6 @@ export class FavoritesService {
   ): boolean {
     return !!(
       FavoritesService.favorites[favorite] as Array<IArtist | IAlbum | ITrack>
-    ).find((fav) => fav.id === id);
+    ).find((fav: IArtist | IAlbum | ITrack) => fav.id === id);
   }
 }
