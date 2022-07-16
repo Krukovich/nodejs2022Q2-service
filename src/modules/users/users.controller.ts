@@ -30,7 +30,7 @@ export class UsersController {
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  getUserById(@Param('id') id: IUser['id']): IUser {
+  getUserById(@Param('id') id: IUser['id']): IResponseUser {
     if (!uuidValidateV4(id)) {
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
@@ -46,7 +46,13 @@ export class UsersController {
       );
     }
 
-    return user;
+    return {
+      id: user.id,
+      login: user.login,
+      version: user.version,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    };
   }
 
   @Post()
