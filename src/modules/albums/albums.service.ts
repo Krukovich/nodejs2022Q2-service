@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { IAlbum } from './albums.interface';
+import { IArtist } from '../artists/artists.interface';
 
 @Injectable()
 export class AlbumsService {
@@ -60,5 +61,14 @@ export class AlbumsService {
     AlbumsService.albums = AlbumsService.albums.filter(
       (album: IAlbum) => album.id !== id,
     );
+  }
+
+  setArtistIdIsNull(id: IArtist['id']): void {
+    AlbumsService.albums = AlbumsService.albums.map((album: IAlbum) => {
+      return {
+        ...album,
+        artistId: album.artistId === id ? null : album.artistId,
+      };
+    });
   }
 }

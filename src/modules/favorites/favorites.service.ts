@@ -41,6 +41,14 @@ export class FavoritesService {
       FavoritesService.favorites.albums.filter(
         (album: IAlbum) => album.id !== id,
       );
+    FavoritesService.favorites.tracks = FavoritesService.favorites.tracks.map(
+      (track: ITrack) => {
+        return {
+          ...track,
+          albumId: track.albumId === id ? null : track.albumId,
+        };
+      },
+    );
   }
 
   createFavoritesArtist(artist: IArtist): IArtist {
@@ -53,6 +61,22 @@ export class FavoritesService {
       FavoritesService.favorites.artists.filter(
         (artist: IArtist) => artist.id !== id,
       );
+    FavoritesService.favorites.tracks = FavoritesService.favorites.tracks.map(
+      (track: ITrack) => {
+        return {
+          ...track,
+          artistId: track.artistId === id ? null : track.artistId,
+        };
+      },
+    );
+    FavoritesService.favorites.albums = FavoritesService.favorites.albums.map(
+      (album: IAlbum) => {
+        return {
+          ...album,
+          artistId: album.artistId === id ? null : album.artistId,
+        };
+      },
+    );
   }
 
   searchInFavorites(
