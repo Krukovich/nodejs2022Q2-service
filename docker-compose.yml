@@ -1,0 +1,12 @@
+services:
+  db:
+    image: node_service_postgres
+    environment:
+      - POSTGRES_PASSWORD=node_service_password
+      - POSTGRES_USER=node_service_user
+      - POSTGRES_DB=node_service
+    ports:
+      - '5432:5432'
+
+volumes:
+  db_data:
