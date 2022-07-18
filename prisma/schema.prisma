@@ -1,0 +1,48 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+//TODO CHANGE SCHEMA
+model users {
+  id String @id @unique @default(uuid())
+  login String @unique
+  password String
+  version Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model albums {
+  id String @id @unique @default(uuid())
+  name String @unique
+  year Int
+  artistId String? @unique @default(uuid())
+}
+
+model tracks {
+  id String @id @unique @default(uuid())
+  name String @unique
+  artistId String? @unique @default(uuid())
+  albumId String? @unique @default(uuid())
+  duration Int
+}
+
+model artists {
+  id String @id @unique @default(uuid())
+  name String @unique
+  grammy Boolean
+}
+
+model favorites {
+  id String @id @unique @default(uuid())
+  artistsId String? @unique @default(uuid())
+  albumsId String? @unique @default(uuid())
+  tracksId String? @unique @default(uuid())
+}
+
+
+
