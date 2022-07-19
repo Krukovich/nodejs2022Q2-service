@@ -1,12 +1,19 @@
 services:
+  web:
+    build:
+      context: .
+      dockerfile: ./docker/web/Dockerfile
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/code
   db:
-    image: node_service_postgres
+    build:
+      context: .
+      dockerfile: ./docker/db/Dockerfile
     environment:
       - POSTGRES_PASSWORD=node_service_password
       - POSTGRES_USER=node_service_user
       - POSTGRES_DB=node_service
     ports:
-      - '5432:5432'
-
-volumes:
-  db_data:
+      - "5432:5432"
