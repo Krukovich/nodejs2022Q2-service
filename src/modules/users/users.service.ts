@@ -17,8 +17,8 @@ export class UsersService {
     return await this.prismaService.users.findMany();
   }
 
-  getUserById(id: IUser['id']): IUser {
-    return UsersService.users.find((user) => user.id === id);
+  async getUserById(id: IUser['id']): Promise<any> {
+    return await this.prismaService.users.findUnique({ where: { id } });
   }
 
   async createUser(user: {
