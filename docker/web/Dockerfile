@@ -20,10 +20,6 @@ COPY . .
 # Creates a "dist" folder with the production build
 RUN npm run build
 
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/dist ./dist
+EXPOSE 4000
 
-
-# Start the server using the production build
 CMD [ "npm", "run", "start:prod" ]
