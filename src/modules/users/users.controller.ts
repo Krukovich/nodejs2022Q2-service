@@ -24,20 +24,20 @@ export class UsersController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  getAllUsers(): Promise<any> {
+  getAllUsers(): Promise<IResponseUser[]> {
     return this.usersService.getAllUsers();
   }
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  getUserById(@Param('id') id: IUser['id']): IResponseUser {
+  async getUserById(@Param('id') id: IUser['id']): Promise<IResponseUser> {
     if (!uuidValidateV4(id)) {
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
         HttpStatus.BAD_REQUEST,
       );
     }
-    const user: IUser = this.usersService.getUserById(id);
+    const user: IUser = await this.usersService.getUserById(id);
 
     if (!user) {
       throw new HttpException(
@@ -76,7 +76,7 @@ export class UsersController {
       );
     }
 
-    const user: IUser = this.usersService.getUserById(id);
+    const user: IUser = await this.usersService.getUserById(id);
 
     if (!user) {
       throw new HttpException(
@@ -97,7 +97,7 @@ export class UsersController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  deleteUser(@Param('id') id: IUser['id']) {
+  async deleteUser(@Param('id') id: IUser['id']) {
     if (!uuidValidateV4(id)) {
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
@@ -105,7 +105,7 @@ export class UsersController {
       );
     }
 
-    const user: IUser = this.usersService.getUserById(id);
+    const user: IUser = await this.usersService.getUserById(id);
 
     if (!user) {
       throw new HttpException(
