@@ -5,11 +5,14 @@ import { ValidationPipe } from '@nestjs/common';
 import { readFile } from 'fs/promises';
 import { parse } from 'yaml';
 import { join } from 'path';
+import { PrismaService } from './prisma/prisma.service';
 
 const PORT: string | number = process.env.PORT || 4000;
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const prismaService = app.get(PrismaService);
+  await prismaService.enableShutdownHooks(app);
   app.useGlobalPipes(
     new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }),
   );

@@ -3,25 +3,18 @@ import { v4 as uuidv4 } from 'uuid';
 import { IResponseUser, IUser } from './users.interface';
 import { FIRST_VERSION } from '../../../constants';
 import { getHashPassword } from '../../../utils';
+import { PrismaService } from '../../prisma/prisma.service';
 
 @Injectable()
 export class UsersService {
   private static users: IUser[] = [];
 
-  constructor() {
+  constructor(private readonly prismaService: PrismaService) {
     UsersService.users = [];
   }
 
-  getAllUsers(): IResponseUser[] {
-    return UsersService.users.map((user: IUser) => {
-      return {
-        id: user.id,
-        login: user.login,
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt,
-        version: user.version,
-      };
-    });
+  async getAllUsers(): Promise<any> {
+    return await this.prismaService.users.findMany();
   }
 
   getUserById(id: IUser['id']): IUser {
@@ -31,24 +24,17 @@ export class UsersService {
   async createUser(user: {
     login: IUser['login'];
     password: IUser['password'];
-  }): Promise<IResponseUser> {
-    const newUser: IUser = {
-      id: uuidv4(),
-      login: user.login,
-      password: await getHashPassword(user.password),
-      createdAt: new Date().valueOf(),
-      updatedAt: new Date().valueOf(),
-      version: FIRST_VERSION,
-    };
-    UsersService.users.push(newUser);
-
-    return {
-      id: newUser.id,
-      login: newUser.login,
-      createdAt: newUser.createdAt,
-      updatedAt: newUser.updatedAt,
-      version: newUser.version,
-    };
+  }): Promise<any> {
+    return this.prismaService.users.create({
+      data: {
+        id: uuidv4(),
+        login: user.login,
+        password: await getHashPassword(user.password),
+        version: FIRST_VERSION,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      },
+    });
   }
 
   async changeUser(
