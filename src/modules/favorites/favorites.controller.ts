@@ -87,7 +87,7 @@ export class FavoritesController {
 
   @Post('album/:id')
   @HttpCode(HttpStatus.CREATED)
-  createFavoritesAlbum(@Param('id') id: IAlbum['id']): IAlbum {
+  async createFavoritesAlbum(@Param('id') id: IAlbum['id']): Promise<IAlbum> {
     if (!uuidValidateV4(id)) {
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
@@ -95,7 +95,7 @@ export class FavoritesController {
       );
     }
 
-    const album: IAlbum = this.albumsService.getAlbumById(id);
+    const album: IAlbum = await this.albumsService.getAlbumById(id);
 
     if (!album) {
       throw new HttpException(
@@ -109,7 +109,7 @@ export class FavoritesController {
 
   @Delete('album/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  deleteFavoritesAlbum(@Param('id') id: IAlbum['id']): void {
+  async deleteFavoritesAlbum(@Param('id') id: IAlbum['id']): Promise<void> {
     if (!uuidValidateV4(id)) {
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
@@ -117,7 +117,7 @@ export class FavoritesController {
       );
     }
 
-    const album: IAlbum = this.albumsService.getAlbumById(id);
+    const album: IAlbum = await this.albumsService.getAlbumById(id);
 
     if (!album) {
       throw new HttpException(

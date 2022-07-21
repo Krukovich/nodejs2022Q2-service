@@ -1,42 +1,49 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { IAlbum } from './albums.interface';
 import { IArtist } from '../artists/artists.interface';
+import { PrismaService } from '../../prisma/prisma.service';
+import { EXCEPTION, FIRST_ITEM } from '../../../constants';
 
 @Injectable()
 export class AlbumsService {
-  private static albums: IAlbum[] = [];
+  constructor(private readonly prismaService: PrismaService) {}
 
-  constructor() {
-    AlbumsService.albums = [];
+  async getAllAlbums(): Promise<IAlbum[]> {
+    return this.prismaService.albums.findMany();
   }
 
-  getAllAlbums(): IAlbum[] {
-    return AlbumsService.albums;
+  async getAlbumById(id: IAlbum['id']): Promise<IAlbum> {
+    return this.prismaService.albums.findUnique({
+      where: {
+        id: id,
+      },
+    });
   }
 
-  getAlbumById(id: IAlbum['id']): IAlbum {
-    return AlbumsService.albums.find((user) => user.id === id);
-  }
-
-  createAlbum(album: {
+  async createAlbum(album: {
     name: IAlbum['name'];
     year: IAlbum['year'];
     artistId: IAlbum['artistId'];
-  }) {
-    const newAlbum: IAlbum = {
-      id: uuidv4(),
-      name: album.name,
-      year: album.year,
-      artistId: album.artistId ? album.artistId : null,
-    };
-
-    AlbumsService.albums.push(newAlbum);
-
-    return newAlbum;
+  }): Promise<IAlbum> {
+    try {
+      return await this.prismaService.albums.create({
+        data: {
+          id: uuidv4(),
+          name: album.name,
+          year: album.year,
+          artistId: album.artistId ? album.artistId : null,
+        },
+      });
+    } catch (e) {
+      throw new HttpException(
+        `${e.meta.target[FIRST_ITEM]} ${EXCEPTION.UNPROCESSABLE_ENTITY.UNIQUE}`,
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
+    }
   }
 
-  changeAlbum(
+  async changeAlbum(
     id: IAlbum['id'],
     data: {
       name: IAlbum['name'];
@@ -44,31 +51,34 @@ export class AlbumsService {
       artistId: IAlbum['artistId'];
     },
   ) {
-    let findIndex: number;
-    AlbumsService.albums.forEach((track: IAlbum, index: number): void => {
-      if (id === track.id) {
-        track.name = data.name ? data.name : track.name;
-        track.year = data.artistId ? data.year : track.year;
-        track.artistId = data.artistId ? data.artistId : track.artistId;
-        findIndex = index;
-      }
+    return await this.prismaService.albums.update({
+      where: {
+        id: id,
+      },
+      data: {
+        name: data.name,
+        year: data.year,
+        artistId: data.artistId,
+      },
     });
-
-    return AlbumsService.albums[findIndex];
   }
 
-  deleteAlbum(id: IAlbum['id']): void {
-    AlbumsService.albums = AlbumsService.albums.filter(
-      (album: IAlbum) => album.id !== id,
-    );
+  async deleteAlbum(id: IAlbum['id']): Promise<void> {
+    await this.prismaService.albums.delete({
+      where: {
+        id: id,
+      },
+    });
   }
 
-  setArtistIdIsNull(id: IArtist['id']): void {
-    AlbumsService.albums = AlbumsService.albums.map((album: IAlbum) => {
-      return {
-        ...album,
-        artistId: album.artistId === id ? null : album.artistId,
-      };
+  async setArtistIdIsNull(id: IArtist['id']): Promise<void> {
+    await this.prismaService.albums.update({
+      where: {
+        id: id,
+      },
+      data: {
+        artistId: null,
+      },
     });
   }
 }
