@@ -15,6 +15,7 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { ChangeUserDto } from './dto/change-user.dto';
 import { IResponseUser, IUser } from './users.interface';
+import { Users } from '@prisma/client';
 import { comparePassword, uuidValidateV4 } from '../../../utils';
 import { EXCEPTION } from '../../../constants';
 
@@ -60,7 +61,15 @@ export class UsersController {
   async createUser(
     @Body(new ValidationPipe()) createUsers: CreateUserDto,
   ): Promise<IResponseUser> {
-    return await this.usersService.createUser(createUsers);
+    const user: Users = await this.usersService.createUser(createUsers);
+
+    return {
+      id: user.id,
+      login: user.login,
+      version: user.version,
+      createdAt: new Date(user.createdAt).valueOf(),
+      updatedAt: new Date(user.updatedAt).valueOf(),
+    };
   }
 
   @Put(':id')
@@ -113,7 +122,7 @@ export class UsersController {
         HttpStatus.NOT_FOUND,
       );
     } else {
-      this.usersService.deleteUser(id);
+      await this.usersService.deleteUser(id);
     }
   }
 }

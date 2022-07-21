@@ -2,6 +2,7 @@ export const PASSWORD_LENGTH = 4;
 export const FIRST_VERSION = 1;
 export const UUID_VERSION = 4;
 export const HASH_LEVEL = 3;
+export const FIRST_ITEM = 0;
 
 export const EXCEPTION = {
   BAD_REQUEST: {
@@ -13,5 +14,6 @@ export const EXCEPTION = {
   },
   UNPROCESSABLE_ENTITY: {
     NOT_FOUND: 'can not record because it does not exist',
+    UNIQUE: 'must be a unique value',
   },
 };
