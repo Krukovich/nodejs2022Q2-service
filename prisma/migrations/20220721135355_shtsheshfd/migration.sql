@@ -4,8 +4,8 @@ CREATE TABLE "users" (
     "login" VARCHAR(256) NOT NULL,
     "password" VARCHAR(256) NOT NULL,
     "version" INTEGER NOT NULL DEFAULT 1,
-    "createdAt" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMPTZ(3) NOT NULL,
+    "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(3) NOT NULL,
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("user_id")
 );
@@ -23,7 +23,7 @@ CREATE TABLE "artists" (
 -- CreateTable
 CREATE TABLE "albums" (
     "album_id" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
+    "name" VARCHAR(256) NOT NULL,
     "year" INTEGER NOT NULL,
     "artistId" TEXT,
     "favoriteId" TEXT,
@@ -34,7 +34,7 @@ CREATE TABLE "albums" (
 -- CreateTable
 CREATE TABLE "tracks" (
     "track_id" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
+    "name" VARCHAR(256) NOT NULL,
     "duration" INTEGER NOT NULL,
     "artistId" TEXT,
     "albumId" TEXT,
@@ -49,18 +49,6 @@ CREATE TABLE "favorite" (
 
     CONSTRAINT "favorite_pkey" PRIMARY KEY ("id")
 );
-
--- CreateIndex
-CREATE UNIQUE INDEX "users_user_id_key" ON "users"("user_id");
-
--- CreateIndex
-CREATE UNIQUE INDEX "artists_artist_id_key" ON "artists"("artist_id");
-
--- CreateIndex
-CREATE UNIQUE INDEX "albums_album_id_key" ON "albums"("album_id");
-
--- CreateIndex
-CREATE UNIQUE INDEX "tracks_track_id_key" ON "tracks"("track_id");
 
 -- AddForeignKey
 ALTER TABLE "artists" ADD CONSTRAINT "artists_favoriteId_fkey" FOREIGN KEY ("favoriteId") REFERENCES "favorite"("id") ON DELETE SET NULL ON UPDATE CASCADE;

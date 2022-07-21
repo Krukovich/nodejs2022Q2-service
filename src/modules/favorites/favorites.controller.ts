@@ -8,7 +8,7 @@ import {
   Param,
   Post,
 } from '@nestjs/common';
-import { IFavoritesResponse, ISearchFavorite } from './favorites.interface';
+import { IFavoritesResponse } from './favorites.interface';
 import { FavoritesService } from './favorites.service';
 import { ITrack } from '../tracks/tracks.interface';
 import { TracksService } from '../tracks/tracks.service';
@@ -30,8 +30,8 @@ export class FavoritesController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  getAllFavorites(): IFavoritesResponse {
-    return this.favoritesService.getAllFavorites();
+  async getAllFavorites(): Promise<IFavoritesResponse[]> {
+    return await this.favoritesService.getAllFavorites();
   }
 
   @Post('track/:id')
@@ -75,14 +75,7 @@ export class FavoritesController {
       );
     }
 
-    if (!this.favoritesService.searchInFavorites(ISearchFavorite.tracks, id)) {
-      throw new HttpException(
-        EXCEPTION.BAD_REQUEST.NOT_FOUND,
-        HttpStatus.NOT_FOUND,
-      );
-    }
-
-    this.favoritesService.deleteFavoriteTrack(id);
+    await this.favoritesService.deleteFavoriteTrack(id);
   }
 
   @Post('album/:id')
@@ -120,13 +113,6 @@ export class FavoritesController {
     const album: IAlbum = await this.albumsService.getAlbumById(id);
 
     if (!album) {
-      throw new HttpException(
-        EXCEPTION.BAD_REQUEST.NOT_FOUND,
-        HttpStatus.NOT_FOUND,
-      );
-    }
-
-    if (!this.favoritesService.searchInFavorites(ISearchFavorite.albums, id)) {
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.NOT_FOUND,
         HttpStatus.NOT_FOUND,
@@ -173,13 +159,6 @@ export class FavoritesController {
     const artist: IArtist = await this.artistsService.getArtistById(id);
 
     if (!artist) {
-      throw new HttpException(
-        EXCEPTION.BAD_REQUEST.NOT_FOUND,
-        HttpStatus.NOT_FOUND,
-      );
-    }
-
-    if (!this.favoritesService.searchInFavorites(ISearchFavorite.artists, id)) {
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.NOT_FOUND,
         HttpStatus.NOT_FOUND,
