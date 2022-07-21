@@ -11,7 +11,7 @@ import {
 import { IFavoritesResponse, ISearchFavorite } from './favorites.interface';
 import { FavoritesService } from './favorites.service';
 import { ITrack } from '../tracks/tracks.interface';
-import { TrackService } from '../tracks/track.service';
+import { TracksService } from '../tracks/tracks.service';
 import { AlbumsService } from '../albums/albums.service';
 import { ArtistsService } from '../artists/artists.service';
 import { IAlbum } from '../albums/albums.interface';
@@ -23,7 +23,7 @@ import { EXCEPTION } from '../../../constants';
 export class FavoritesController {
   constructor(
     private readonly favoritesService: FavoritesService,
-    private readonly trackService: TrackService,
+    private readonly trackService: TracksService,
     private readonly albumsService: AlbumsService,
     private readonly artistsService: ArtistsService,
   ) {}
@@ -36,7 +36,7 @@ export class FavoritesController {
 
   @Post('track/:id')
   @HttpCode(HttpStatus.CREATED)
-  createFavoritesTrack(@Param('id') id: ITrack['id']): ITrack {
+  async createFavoritesTrack(@Param('id') id: ITrack['id']): Promise<ITrack> {
     if (!uuidValidateV4(id)) {
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
@@ -44,7 +44,7 @@ export class FavoritesController {
       );
     }
 
-    const track: ITrack = this.trackService.getTrackById(id);
+    const track: ITrack = await this.trackService.getTrackById(id);
 
     if (!track) {
       throw new HttpException(
@@ -58,7 +58,7 @@ export class FavoritesController {
 
   @Delete('track/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  deleteFavoriteTrack(@Param('id') id: ITrack['id']): void {
+  async deleteFavoriteTrack(@Param('id') id: ITrack['id']): Promise<void> {
     if (!uuidValidateV4(id)) {
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
@@ -66,7 +66,7 @@ export class FavoritesController {
       );
     }
 
-    const track: ITrack = this.trackService.getTrackById(id);
+    const track: ITrack = await this.trackService.getTrackById(id);
 
     if (!track) {
       throw new HttpException(

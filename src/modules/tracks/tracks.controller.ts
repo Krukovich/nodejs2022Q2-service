@@ -1,4 +1,4 @@
-import { TrackService } from './track.service';
+import { TracksService } from './tracks.service';
 import { ITrack } from './tracks.interface';
 import {
   Body,
@@ -22,26 +22,26 @@ import { FavoritesService } from '../favorites/favorites.service';
 @Controller('track')
 export class TracksController {
   constructor(
-    private readonly trackService: TrackService,
+    private readonly trackService: TracksService,
     private readonly favoritesService: FavoritesService,
   ) {}
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  getAllTracks(): ITrack[] {
-    return this.trackService.getAllTracks();
+  async getAllTracks(): Promise<ITrack[]> {
+    return await this.trackService.getAllTracks();
   }
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  getTrackById(@Param('id') id: ITrack['id']): ITrack {
+  async getTrackById(@Param('id') id: ITrack['id']): Promise<ITrack> {
     if (!uuidValidateV4(id)) {
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
         HttpStatus.BAD_REQUEST,
       );
     }
-    const track: ITrack = this.trackService.getTrackById(id);
+    const track: ITrack = await this.trackService.getTrackById(id);
 
     if (!track) {
       throw new HttpException(
@@ -55,16 +55,18 @@ export class TracksController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  createTrack(@Body(new ValidationPipe()) createTrack: CreateTrackDto): ITrack {
-    return this.trackService.createTrack(createTrack);
+  async createTrack(
+    @Body(new ValidationPipe()) createTrack: CreateTrackDto,
+  ): Promise<ITrack> {
+    return await this.trackService.createTrack(createTrack);
   }
 
   @Put(':id')
   @HttpCode(HttpStatus.OK)
-  changeTrack(
+  async changeTrack(
     @Param('id') id: ITrack['id'],
     @Body(new ValidationPipe()) changeTrack: ChangeTrackDto,
-  ): ITrack {
+  ): Promise<ITrack> {
     if (!uuidValidateV4(id)) {
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
@@ -72,7 +74,7 @@ export class TracksController {
       );
     }
 
-    const track: ITrack = this.trackService.getTrackById(id);
+    const track: ITrack = await this.trackService.getTrackById(id);
 
     if (!track) {
       throw new HttpException(
@@ -81,12 +83,12 @@ export class TracksController {
       );
     }
 
-    return this.trackService.changeTrack(id, changeTrack);
+    return await this.trackService.changeTrack(id, changeTrack);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  deleteTrack(@Param('id') id: ITrack['id']) {
+  async deleteTrack(@Param('id') id: ITrack['id']): Promise<void> {
     if (!uuidValidateV4(id)) {
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
@@ -94,7 +96,7 @@ export class TracksController {
       );
     }
 
-    const track: ITrack = this.trackService.getTrackById(id);
+    const track: ITrack = await this.trackService.getTrackById(id);
 
     if (!track) {
       throw new HttpException(
@@ -102,7 +104,7 @@ export class TracksController {
         HttpStatus.NOT_FOUND,
       );
     } else {
-      this.trackService.deleteTrack(id);
+      await this.trackService.deleteTrack(id);
       this.favoritesService.deleteFavoriteTrack(id);
     }
   }

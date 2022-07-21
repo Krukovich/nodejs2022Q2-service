@@ -16,7 +16,7 @@ import { IAlbum } from './albums.interface';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { ChangeAlbumDto } from './dto/change-album.dto';
 import { FavoritesService } from '../favorites/favorites.service';
-import { TrackService } from '../tracks/track.service';
+import { TracksService } from '../tracks/tracks.service';
 import { IArtist } from '../artists/artists.interface';
 import { ArtistsService } from '../artists/artists.service';
 import { uuidValidateV4 } from '../../../utils';
@@ -27,7 +27,7 @@ export class AlbumsController {
   constructor(
     private readonly albumsService: AlbumsService,
     private readonly favoritesService: FavoritesService,
-    private readonly trackService: TrackService,
+    private readonly trackService: TracksService,
     private readonly artistService: ArtistsService,
   ) {}
 
@@ -121,8 +121,8 @@ export class AlbumsController {
       );
     } else {
       await this.albumsService.deleteAlbum(id);
+      await this.trackService.setAlbumIdIsNull(id);
       this.favoritesService.deleteFavoriteAlbum(id);
-      this.trackService.setAlbumIdIsNull(id);
     }
   }
 }

@@ -18,7 +18,7 @@ import { IArtist } from './artists.interface';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { ChangeArtistDto } from './dto/change-artist.dto';
 import { FavoritesService } from '../favorites/favorites.service';
-import { TrackService } from '../tracks/track.service';
+import { TracksService } from '../tracks/tracks.service';
 import { AlbumsService } from '../albums/albums.service';
 
 @Controller('artist')
@@ -26,7 +26,7 @@ export class ArtistsController {
   constructor(
     private readonly artistService: ArtistsService,
     private readonly favoritesService: FavoritesService,
-    private readonly trackService: TrackService,
+    private readonly trackService: TracksService,
     private readonly albumService: AlbumsService,
   ) {}
 
@@ -109,9 +109,9 @@ export class ArtistsController {
       );
     } else {
       await this.artistService.deleteArtist(id);
-      this.favoritesService.deleteFavoriteArtist(id);
-      this.trackService.setArtistIdIsNull(id);
+      await this.trackService.setArtistIdIsNull(id);
       await this.albumService.setArtistIdIsNull(id);
+      this.favoritesService.deleteFavoriteArtist(id);
     }
   }
 }
