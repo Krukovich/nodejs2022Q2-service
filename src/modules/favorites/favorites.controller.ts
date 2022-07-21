@@ -138,7 +138,9 @@ export class FavoritesController {
 
   @Post('artist/:id')
   @HttpCode(HttpStatus.CREATED)
-  createFavoritesArtist(@Param('id') id: IArtist['id']): IArtist {
+  async createFavoritesArtist(
+    @Param('id') id: IArtist['id'],
+  ): Promise<IArtist> {
     if (!uuidValidateV4(id)) {
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
@@ -146,7 +148,7 @@ export class FavoritesController {
       );
     }
 
-    const artist: IArtist = this.artistsService.getArtistById(id);
+    const artist: IArtist = await this.artistsService.getArtistById(id);
 
     if (!artist) {
       throw new HttpException(
@@ -160,7 +162,7 @@ export class FavoritesController {
 
   @Delete('artist/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  deleteFavoritesArtist(@Param('id') id: IArtist['id']): void {
+  async deleteFavoritesArtist(@Param('id') id: IArtist['id']): Promise<void> {
     if (!uuidValidateV4(id)) {
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
@@ -168,7 +170,7 @@ export class FavoritesController {
       );
     }
 
-    const artist: IArtist = this.artistsService.getArtistById(id);
+    const artist: IArtist = await this.artistsService.getArtistById(id);
 
     if (!artist) {
       throw new HttpException(

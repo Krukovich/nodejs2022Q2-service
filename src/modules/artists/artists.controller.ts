@@ -32,20 +32,20 @@ export class ArtistsController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  getAllArtist(): IArtist[] {
+  async getAllArtist(): Promise<IArtist[]> {
     return this.artistService.getAllArtist();
   }
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  getArtistById(@Param('id') id: IArtist['id']): IArtist {
+  async getArtistById(@Param('id') id: IArtist['id']): Promise<IArtist> {
     if (!uuidValidateV4(id)) {
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
         HttpStatus.BAD_REQUEST,
       );
     }
-    const artist: IArtist = this.artistService.getArtistById(id);
+    const artist: IArtist = await this.artistService.getArtistById(id);
 
     if (!artist) {
       throw new HttpException(
@@ -59,18 +59,18 @@ export class ArtistsController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  createArtist(
+  async createArtist(
     @Body(new ValidationPipe()) createArtist: CreateArtistDto,
-  ): IArtist {
-    return this.artistService.createArtist(createArtist);
+  ): Promise<IArtist> {
+    return await this.artistService.createArtist(createArtist);
   }
 
   @Put(':id')
   @HttpCode(HttpStatus.OK)
-  changeArtist(
+  async changeArtist(
     @Param('id') id: IArtist['id'],
     @Body(new ValidationPipe()) changeArtis: ChangeArtistDto,
-  ): IArtist {
+  ): Promise<IArtist> {
     if (!uuidValidateV4(id)) {
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
@@ -78,7 +78,7 @@ export class ArtistsController {
       );
     }
 
-    const artist: IArtist = this.artistService.getArtistById(id);
+    const artist: IArtist = await this.artistService.getArtistById(id);
 
     if (!artist) {
       throw new HttpException(
@@ -92,7 +92,7 @@ export class ArtistsController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  deleteArtist(@Param('id') id: IArtist['id']) {
+  async deleteArtist(@Param('id') id: IArtist['id']): Promise<void> {
     if (!uuidValidateV4(id)) {
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
@@ -100,7 +100,7 @@ export class ArtistsController {
       );
     }
 
-    const artist: IArtist = this.artistService.getArtistById(id);
+    const artist: IArtist = await this.artistService.getArtistById(id);
 
     if (!artist) {
       throw new HttpException(
