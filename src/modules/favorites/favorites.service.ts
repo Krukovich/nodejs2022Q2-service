@@ -3,11 +3,12 @@ import { IFavoritesResponse, ISearchFavorite } from './favorites.interface';
 import { ITrack } from '../tracks/tracks.interface';
 import { IAlbum } from '../albums/albums.interface';
 import { IArtist } from '../artists/artists.interface';
+import { PrismaService } from '../../prisma/prisma.service';
 
 @Injectable()
 export class FavoritesService {
   private static favorites: IFavoritesResponse;
-  constructor() {
+  constructor(private readonly prismaService: PrismaService) {
     FavoritesService.favorites = {
       artists: [],
       albums: [],
@@ -15,20 +16,35 @@ export class FavoritesService {
     };
   }
 
-  getAllFavorites(): IFavoritesResponse {
-    return FavoritesService.favorites;
+  async getAllFavorites(): Promise<any> {
+    return await this.prismaService.favorite.findMany({
+      select: {
+        tracks: { where: { NOT: [{ favoriteId: null }] } },
+        albums: { where: { NOT: [{ favoriteId: null }] } },
+        artists: { where: { NOT: [{ favoriteId: null }] } },
+      },
+    });
   }
 
-  createFavoritesTrack(track: ITrack): ITrack {
-    FavoritesService.favorites.tracks.push(track);
+  async createFavoritesTrack(track: ITrack): Promise<ITrack> {
+    const { id } = await this.prismaService.favorite.create({ data: {} });
+    await this.prismaService.track.update({
+      where: {
+        id: track.id,
+      },
+      data: {
+        favoriteId: id,
+      },
+    });
     return track;
   }
 
-  deleteFavoriteTrack(id: ITrack['id']): void {
-    FavoritesService.favorites.tracks =
-      FavoritesService.favorites.tracks.filter(
-        (track: ITrack) => track.id !== id,
-      );
+  async deleteFavoriteTrack(id: ITrack['id']): Promise<void> {
+    await this.prismaService.favorite.delete({
+      where: {
+        id: id,
+      },
+    });
   }
 
   createFavoritesAlbum(album: IAlbum): IAlbum {
