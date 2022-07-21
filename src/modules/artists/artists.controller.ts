@@ -108,10 +108,10 @@ export class ArtistsController {
         HttpStatus.NOT_FOUND,
       );
     } else {
-      this.artistService.deleteArtist(id);
+      await this.artistService.deleteArtist(id);
       this.favoritesService.deleteFavoriteArtist(id);
       this.trackService.setArtistIdIsNull(id);
-      this.albumService.setArtistIdIsNull(id);
+      await this.albumService.setArtistIdIsNull(id);
     }
   }
 }

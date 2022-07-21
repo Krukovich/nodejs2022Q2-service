@@ -13,12 +13,14 @@ import {
 } from '@nestjs/common';
 import { AlbumsService } from './albums.service';
 import { IAlbum } from './albums.interface';
-import { uuidValidateV4 } from '../../../utils';
-import { EXCEPTION } from '../../../constants';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { ChangeAlbumDto } from './dto/change-album.dto';
 import { FavoritesService } from '../favorites/favorites.service';
 import { TrackService } from '../tracks/track.service';
+import { IArtist } from '../artists/artists.interface';
+import { ArtistsService } from '../artists/artists.service';
+import { uuidValidateV4 } from '../../../utils';
+import { EXCEPTION } from '../../../constants';
 
 @Controller('album')
 export class AlbumsController {
@@ -26,24 +28,25 @@ export class AlbumsController {
     private readonly albumsService: AlbumsService,
     private readonly favoritesService: FavoritesService,
     private readonly trackService: TrackService,
+    private readonly artistService: ArtistsService,
   ) {}
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  getAllAlbums(): IAlbum[] {
-    return this.albumsService.getAllAlbums();
+  async getAllAlbums(): Promise<IAlbum[]> {
+    return await this.albumsService.getAllAlbums();
   }
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  getAlbumById(@Param('id') id: IAlbum['id']): IAlbum {
+  async getAlbumById(@Param('id') id: IAlbum['id']): Promise<IAlbum> {
     if (!uuidValidateV4(id)) {
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
         HttpStatus.BAD_REQUEST,
       );
     }
-    const album: IAlbum = this.albumsService.getAlbumById(id);
+    const album: IAlbum = await this.albumsService.getAlbumById(id);
 
     if (!album) {
       throw new HttpException(
@@ -57,16 +60,18 @@ export class AlbumsController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  createAlbum(@Body(new ValidationPipe()) createAlbum: CreateAlbumDto): IAlbum {
-    return this.albumsService.createAlbum(createAlbum);
+  async createAlbum(
+    @Body(new ValidationPipe()) createAlbum: CreateAlbumDto,
+  ): Promise<IAlbum> {
+    return await this.albumsService.createAlbum(createAlbum);
   }
 
   @Put(':id')
   @HttpCode(HttpStatus.OK)
-  changeAlbum(
+  async changeAlbum(
     @Param('id') id: IAlbum['id'],
     @Body(new ValidationPipe()) changeAlbums: ChangeAlbumDto,
-  ): IAlbum {
+  ): Promise<IAlbum> {
     if (!uuidValidateV4(id)) {
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
@@ -74,9 +79,20 @@ export class AlbumsController {
       );
     }
 
-    const album: IAlbum = this.albumsService.getAlbumById(id);
+    const album: IAlbum = await this.albumsService.getAlbumById(id);
 
     if (!album) {
+      throw new HttpException(
+        EXCEPTION.BAD_REQUEST.NOT_FOUND,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    const artis: IArtist = await this.artistService.getArtistById(
+      changeAlbums.artistId,
+    );
+
+    if (!artis) {
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.NOT_FOUND,
         HttpStatus.NOT_FOUND,
@@ -88,7 +104,7 @@ export class AlbumsController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  deleteAlbum(@Param('id') id: IAlbum['id']) {
+  async deleteAlbum(@Param('id') id: IAlbum['id']): Promise<void> {
     if (!uuidValidateV4(id)) {
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
@@ -96,7 +112,7 @@ export class AlbumsController {
       );
     }
 
-    const album: IAlbum = this.albumsService.getAlbumById(id);
+    const album: IAlbum = await this.albumsService.getAlbumById(id);
 
     if (!album) {
       throw new HttpException(
@@ -104,7 +120,7 @@ export class AlbumsController {
         HttpStatus.NOT_FOUND,
       );
     } else {
-      this.albumsService.deleteAlbum(id);
+      await this.albumsService.deleteAlbum(id);
       this.favoritesService.deleteFavoriteAlbum(id);
       this.trackService.setAlbumIdIsNull(id);
     }
