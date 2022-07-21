@@ -11,13 +11,13 @@ import {
   Put,
   ValidationPipe,
 } from '@nestjs/common';
-import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { ChangeUserDto } from './dto/change-user.dto';
 import { IResponseUser, IUser } from './users.interface';
-import { Users } from '@prisma/client';
-import { comparePassword, uuidValidateV4 } from '../../../utils';
 import { EXCEPTION } from '../../../constants';
+import { UsersService } from './users.service';
+import { User } from '@prisma/client';
+import { comparePassword, uuidValidateV4 } from '../../../utils';
 
 @Controller('user')
 export class UsersController {
@@ -61,7 +61,7 @@ export class UsersController {
   async createUser(
     @Body(new ValidationPipe()) createUsers: CreateUserDto,
   ): Promise<IResponseUser> {
-    const user: Users = await this.usersService.createUser(createUsers);
+    const user: User = await this.usersService.createUser(createUsers);
 
     return {
       id: user.id,

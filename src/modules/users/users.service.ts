@@ -4,15 +4,15 @@ import { IResponseUser, IUser } from './users.interface';
 import { FIRST_VERSION } from '../../../constants';
 import { getHashPassword } from '../../../utils';
 import { PrismaService } from '../../prisma/prisma.service';
-import { Users } from '@prisma/client';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
   constructor(private readonly prismaService: PrismaService) {}
 
   async getAllUsers(): Promise<IResponseUser[]> {
-    const users: Users[] = await this.prismaService.users.findMany();
-    return users.map((user: Users) => {
+    const users: User[] = await this.prismaService.user.findMany();
+    return users.map((user: User) => {
       return {
         id: user.id,
         login: user.login,
@@ -24,7 +24,7 @@ export class UsersService {
   }
 
   async getUserById(id: IUser['id']): Promise<IUser> {
-    const user: Users = await this.prismaService.users.findUnique({
+    const user: User = await this.prismaService.user.findUnique({
       where: { id },
     });
 
@@ -41,8 +41,8 @@ export class UsersService {
   async createUser(user: {
     login: IUser['login'];
     password: IUser['password'];
-  }): Promise<Users> {
-    return await this.prismaService.users.create({
+  }): Promise<User> {
+    return await this.prismaService.user.create({
       data: {
         id: uuidv4(),
         login: user.login,
@@ -59,7 +59,7 @@ export class UsersService {
     data: { oldPassword: IUser['password']; newPassword: IUser['password'] },
   ): Promise<IResponseUser> {
     const hashPassword = await getHashPassword(data.newPassword);
-    const updateUser: Users = await this.prismaService.users.update({
+    const updateUser: User = await this.prismaService.user.update({
       where: {
         id: id,
       },
@@ -79,7 +79,7 @@ export class UsersService {
   }
 
   async deleteUser(id: IUser['id']): Promise<void> {
-    await this.prismaService.users.delete({
+    await this.prismaService.user.delete({
       where: {
         id: id,
       },
