@@ -71,49 +71,19 @@ CREATE TABLE "favorites_tracks" (
 CREATE UNIQUE INDEX "users_user_id_key" ON "users"("user_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "users_login_key" ON "users"("login");
-
--- CreateIndex
 CREATE UNIQUE INDEX "albums_album_id_key" ON "albums"("album_id");
-
--- CreateIndex
-CREATE UNIQUE INDEX "albums_name_key" ON "albums"("name");
-
--- CreateIndex
-CREATE UNIQUE INDEX "albums_artist_id_key" ON "albums"("artist_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "tracks_track_id_key" ON "tracks"("track_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "tracks_name_key" ON "tracks"("name");
-
--- CreateIndex
-CREATE UNIQUE INDEX "tracks_artist_id_key" ON "tracks"("artist_id");
-
--- CreateIndex
-CREATE UNIQUE INDEX "tracks_album_id_key" ON "tracks"("album_id");
-
--- CreateIndex
 CREATE UNIQUE INDEX "artists_artist_id_key" ON "artists"("artist_id");
-
--- CreateIndex
-CREATE UNIQUE INDEX "artists_name_key" ON "artists"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "favorites_artists_id_key" ON "favorites_artists"("id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "favorites_artists_user_id_key" ON "favorites_artists"("user_id");
-
--- CreateIndex
 CREATE UNIQUE INDEX "favorites_albums_id_key" ON "favorites_albums"("id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "favorites_albums_user_id_key" ON "favorites_albums"("user_id");
-
--- CreateIndex
 CREATE UNIQUE INDEX "favorites_tracks_id_key" ON "favorites_tracks"("id");
-
--- CreateIndex
-CREATE UNIQUE INDEX "favorites_tracks_user_id_key" ON "favorites_tracks"("user_id");

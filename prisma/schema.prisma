@@ -9,7 +9,7 @@ datasource db {
 
 model Users {
   id String @id @unique @default(uuid()) @map("user_id")
-  login String @unique @db.VarChar(256)
+  login String @db.VarChar(256)
   password String @db.VarChar(256)
   version Int
   createdAt DateTime @default(now()) @db.Timestamptz(3)
@@ -20,18 +20,18 @@ model Users {
 
 model Albums {
   id String @id @unique @default(uuid()) @map("album_id")
-  name String @unique @db.VarChar(256)
+  name String @db.VarChar(256)
   year Int
-  artistId String? @unique @default(uuid()) @map("artist_id")
+  artistId String? @default(uuid()) @map("artist_id")
 
   @@map("albums")
 }
 
 model Tracks {
   id String @id @unique @default(uuid()) @map("track_id")
-  name String @unique @db.VarChar(256)
-  artistId String? @unique @default(uuid()) @map("artist_id")
-  albumId String? @unique @default(uuid()) @map("album_id")
+  name String @db.VarChar(256)
+  artistId String? @default(uuid()) @map("artist_id")
+  albumId String? @default(uuid()) @map("album_id")
   duration Int
 
   @@map("tracks")
@@ -39,7 +39,7 @@ model Tracks {
 
 model Artists {
   id String @id @unique @default(uuid()) @map("artist_id")
-  name String @unique @db.VarChar(256)
+  name String @db.VarChar(256)
   grammy Boolean
 
   @@map("artists")
@@ -47,7 +47,7 @@ model Artists {
 
 model FavoritesArtists {
   id String @id @unique @default(uuid())
-  userId String @unique @map("user_id")
+  userId String @map("user_id")
   artistId String @map("artist_id")
 
   @@map("favorites_artists")
@@ -55,7 +55,7 @@ model FavoritesArtists {
 
 model FavoritesAlbums {
   id String  @id @unique @default(uuid())
-  userId String @unique @map("user_id")
+  userId String @map("user_id")
   albumId String @map("album_id")
 
   @@map("favorites_albums")
@@ -63,7 +63,7 @@ model FavoritesAlbums {
 
 model FavoritesTtacks {
   id String @id @unique @default(uuid())
-  userId String @unique @map("user_id")
+  userId String @map("user_id")
   trackId String @map("track_id")
 
   @@map("favorites_tracks")

@@ -1,7 +1,7 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { IResponseUser, IUser } from './users.interface';
-import { EXCEPTION, FIRST_ITEM, FIRST_VERSION } from '../../../constants';
+import { FIRST_VERSION } from '../../../constants';
 import { getHashPassword } from '../../../utils';
 import { PrismaService } from '../../prisma/prisma.service';
 import { Users } from '@prisma/client';
@@ -42,23 +42,16 @@ export class UsersService {
     login: IUser['login'];
     password: IUser['password'];
   }): Promise<Users> {
-    try {
-      return await this.prismaService.users.create({
-        data: {
-          id: uuidv4(),
-          login: user.login,
-          password: await getHashPassword(user.password),
-          version: FIRST_VERSION,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        },
-      });
-    } catch (e) {
-      throw new HttpException(
-        `${e.meta.target[FIRST_ITEM]} ${EXCEPTION.UNPROCESSABLE_ENTITY.UNIQUE}`,
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      );
-    }
+    return await this.prismaService.users.create({
+      data: {
+        id: uuidv4(),
+        login: user.login,
+        password: await getHashPassword(user.password),
+        version: FIRST_VERSION,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      },
+    });
   }
 
   async changeUser(
