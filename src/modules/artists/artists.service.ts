@@ -8,11 +8,11 @@ export class ArtistsService {
   constructor(private readonly prismaService: PrismaService) {}
 
   async getAllArtist(): Promise<IArtist[]> {
-    return this.prismaService.artists.findMany();
+    return this.prismaService.artist.findMany();
   }
 
   async getArtistById(id: IArtist['id']): Promise<IArtist> {
-    return this.prismaService.artists.findUnique({
+    return this.prismaService.artist.findUnique({
       where: { id },
     });
   }
@@ -21,7 +21,7 @@ export class ArtistsService {
     name: IArtist['name'];
     grammy: IArtist['grammy'];
   }): Promise<IArtist> {
-    return await this.prismaService.artists.create({
+    return await this.prismaService.artist.create({
       data: {
         id: uuidv4(),
         name: artist.name,
@@ -37,7 +37,7 @@ export class ArtistsService {
       grammy: IArtist['grammy'];
     },
   ): Promise<IArtist> {
-    return await this.prismaService.artists.update({
+    return await this.prismaService.artist.update({
       where: {
         id: id,
       },
@@ -49,7 +49,7 @@ export class ArtistsService {
   }
 
   async deleteArtist(id: IArtist['id']): Promise<void> {
-    await this.prismaService.artists.delete({
+    await this.prismaService.artist.delete({
       where: {
         id: id,
       },

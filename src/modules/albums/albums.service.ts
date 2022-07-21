@@ -9,11 +9,11 @@ export class AlbumsService {
   constructor(private readonly prismaService: PrismaService) {}
 
   async getAllAlbums(): Promise<IAlbum[]> {
-    return this.prismaService.albums.findMany();
+    return this.prismaService.album.findMany();
   }
 
   async getAlbumById(id: IAlbum['id']): Promise<IAlbum> {
-    return this.prismaService.albums.findUnique({
+    return this.prismaService.album.findUnique({
       where: {
         id: id,
       },
@@ -25,7 +25,7 @@ export class AlbumsService {
     year: IAlbum['year'];
     artistId: IAlbum['artistId'];
   }): Promise<IAlbum> {
-    return await this.prismaService.albums.create({
+    return await this.prismaService.album.create({
       data: {
         id: uuidv4(),
         name: album.name,
@@ -43,7 +43,7 @@ export class AlbumsService {
       artistId: IAlbum['artistId'];
     },
   ) {
-    return await this.prismaService.albums.update({
+    return await this.prismaService.album.update({
       where: {
         id: id,
       },
@@ -56,7 +56,7 @@ export class AlbumsService {
   }
 
   async deleteAlbum(id: IAlbum['id']): Promise<void> {
-    await this.prismaService.albums.delete({
+    await this.prismaService.album.delete({
       where: {
         id: id,
       },
@@ -64,7 +64,7 @@ export class AlbumsService {
   }
 
   async setArtistIdIsNull(id: IArtist['id']): Promise<void> {
-    await this.prismaService.albums.update({
+    await this.prismaService.album.update({
       where: {
         id: id,
       },

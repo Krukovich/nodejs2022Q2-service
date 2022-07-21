@@ -10,11 +10,11 @@ export class TracksService {
   constructor(private readonly prismaService: PrismaService) {}
 
   async getAllTracks(): Promise<ITrack[]> {
-    return this.prismaService.tracks.findMany();
+    return this.prismaService.track.findMany();
   }
 
   async getTrackById(id: ITrack['id']): Promise<ITrack> {
-    return await this.prismaService.tracks.findUnique({
+    return await this.prismaService.track.findUnique({
       where: {
         id: id,
       },
@@ -27,7 +27,7 @@ export class TracksService {
     artistId: ITrack['artistId'];
     duration: ITrack['duration'];
   }) {
-    return await this.prismaService.tracks.create({
+    return await this.prismaService.track.create({
       data: {
         id: uuidv4(),
         name: track.name ? track.name : null,
@@ -47,7 +47,7 @@ export class TracksService {
       artistId: ITrack['artistId'];
     },
   ): Promise<ITrack> {
-    return await this.prismaService.tracks.update({
+    return await this.prismaService.track.update({
       where: {
         id: id,
       },
@@ -61,7 +61,7 @@ export class TracksService {
   }
 
   async deleteTrack(id: ITrack['id']): Promise<void> {
-    await this.prismaService.tracks.delete({
+    await this.prismaService.track.delete({
       where: {
         id: id,
       },
@@ -69,7 +69,7 @@ export class TracksService {
   }
 
   async setArtistIdIsNull(id: IArtist['id']): Promise<void> {
-    await this.prismaService.tracks.update({
+    await this.prismaService.track.update({
       where: {
         id: id,
       },
@@ -80,9 +80,7 @@ export class TracksService {
   }
 
   async setAlbumIdIsNull(id: IAlbum['id']): Promise<void> {
-    console.log('ID', id);
-    console.log(await this.prismaService.tracks);
-    await this.prismaService.tracks.update({
+    await this.prismaService.track.update({
       where: {
         id: id,
       },
