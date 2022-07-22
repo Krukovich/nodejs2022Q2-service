@@ -1,18 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { IArtist } from './artists.interface';
-import { PrismaService } from '../../prisma/prisma.service';
+import { PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient();
 
 @Injectable()
 export class ArtistsService {
-  constructor(private readonly prismaService: PrismaService) {}
-
   async getAllArtist(): Promise<IArtist[]> {
-    return this.prismaService.artist.findMany();
+    return prisma.artist.findMany();
   }
 
   async getArtistById(id: IArtist['id']): Promise<IArtist> {
-    return this.prismaService.artist.findUnique({
+    return prisma.artist.findUnique({
       where: { id },
     });
   }
@@ -21,7 +20,7 @@ export class ArtistsService {
     name: IArtist['name'];
     grammy: IArtist['grammy'];
   }): Promise<IArtist> {
-    return await this.prismaService.artist.create({
+    return await prisma.artist.create({
       data: {
         id: uuidv4(),
         name: artist.name,
@@ -37,7 +36,7 @@ export class ArtistsService {
       grammy: IArtist['grammy'];
     },
   ): Promise<IArtist> {
-    return await this.prismaService.artist.update({
+    return await prisma.artist.update({
       where: {
         id: id,
       },
@@ -49,7 +48,7 @@ export class ArtistsService {
   }
 
   async deleteArtist(id: IArtist['id']): Promise<void> {
-    await this.prismaService.artist.delete({
+    await prisma.artist.delete({
       where: {
         id: id,
       },
