@@ -25,6 +25,7 @@ services:
       - "${PORT}:${PORT}"
     env_file:
       - .env
+
     networks:
       - nodejs2022q2-network
     volumes:
