@@ -8,6 +8,9 @@ WORKDIR /app
 COPY package*.json ./
 COPY prisma ./prisma/
 
+RUN apk update update
+RUN apk add openssl
+
 # Install app dependencies
 RUN apk add --no-cache make gcc g++ python3 && \
 npm install && \
