@@ -119,7 +119,7 @@ export class FavoritesController {
       );
     }
 
-    this.favoritesService.deleteFavoriteAlbum(id);
+    await this.favoritesService.deleteFavoriteAlbum(id);
   }
 
   @Post('artist/:id')
@@ -165,6 +165,6 @@ export class FavoritesController {
       );
     }
 
-    this.favoritesService.deleteFavoriteArtist(id);
+    await this.favoritesService.deleteFavoriteArtist(id);
   }
 }

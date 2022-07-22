@@ -121,8 +121,6 @@ export class AlbumsController {
       );
     } else {
       await this.albumsService.deleteAlbum(id);
-      await this.trackService.setAlbumIdIsNull(id);
-      this.favoritesService.deleteFavoriteAlbum(id);
     }
   }
 }

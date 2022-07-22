@@ -1,8 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ITrack } from './tracks.interface';
 import { v4 as uuidv4 } from 'uuid';
-import { IArtist } from '../artists/artists.interface';
-import { IAlbum } from '../albums/albums.interface';
 import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
@@ -63,28 +61,6 @@ export class TracksService {
     await prisma.track.delete({
       where: {
         id: id,
-      },
-    });
-  }
-
-  async setArtistIdIsNull(id: IArtist['id']): Promise<void> {
-    await prisma.track.update({
-      where: {
-        id: id,
-      },
-      data: {
-        artistId: null,
-      },
-    });
-  }
-
-  async setAlbumIdIsNull(id: IAlbum['id']): Promise<void> {
-    await prisma.track.update({
-      where: {
-        id: id,
-      },
-      data: {
-        albumId: null,
       },
     });
   }

@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { IAlbum } from './albums.interface';
-import { IArtist } from '../artists/artists.interface';
 import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
@@ -58,17 +57,6 @@ export class AlbumsService {
     await prisma.album.delete({
       where: {
         id: id,
-      },
-    });
-  }
-
-  async setArtistIdIsNull(id: IArtist['id']): Promise<void> {
-    await prisma.album.update({
-      where: {
-        id: id,
-      },
-      data: {
-        artistId: null,
       },
     });
   }
