@@ -6,19 +6,12 @@ WORKDIR /app
 
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
 COPY package*.json ./
-COPY prisma ./prisma/
-
-# Install app dependencies
-RUN apk add --no-cache make gcc g++ python3 && \
-npm install && \
-npm rebuild bcrypt --build-from-source && \
-apk del make gcc g++ python3
 
 # Bundle app source
-COPY . .
+ENV NODE_ENV production
+RUN npm ci --only=production && npm cache clean --force
 
-# Creates a "dist" folder with the production build
-RUN npm run build
+COPY . .
 
 EXPOSE ${POSTGRES_PORT}
 
