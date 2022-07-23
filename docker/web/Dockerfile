@@ -20,6 +20,6 @@ COPY . .
 # Creates a "dist" folder with the production build
 RUN npm run build
 
-EXPOSE 4000
+EXPOSE ${POSTGRES_PORT}
 
 CMD [ "npm", "run", "start:prod" ]
