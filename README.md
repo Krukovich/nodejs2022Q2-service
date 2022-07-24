@@ -7,6 +7,9 @@
 ## Run application docker
 `docker compose up -V --build`
 
+## For scan docker image for vulnerabilities
+`npm run scan`
+
 ## Prerequisites
 
 - Git - [Download & Install Git](https://git-scm.com/downloads).
