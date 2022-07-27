@@ -28,8 +28,6 @@ services:
 
     networks:
       - nodejs2022q2-network
-    volumes:
-      - .:/app
 
 volumes:
   nodejs2022q2-volume:
