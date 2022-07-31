@@ -39,6 +39,23 @@ export class UsersService {
     };
   }
 
+  async getUserByLogin(login: IUser['login']): Promise<IUser> {
+    const user: User = await prisma.user.findFirst({
+      where: { login: login },
+    });
+
+    if (!user) return null;
+
+    return {
+      id: user.id,
+      login: user.login,
+      password: user.password,
+      version: user.version,
+      createdAt: new Date(user.createdAt).valueOf(),
+      updatedAt: new Date(user.updatedAt).valueOf(),
+    };
+  }
+
   async createUser(user: {
     login: IUser['login'];
     password: IUser['password'];
