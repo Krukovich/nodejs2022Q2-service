@@ -16,4 +16,8 @@ export const EXCEPTION = {
     NOT_FOUND: 'can not record because it does not exist',
     UNIQUE: 'must be a unique value',
   },
+  AUTHORIZATION: {
+    NOT_TOKEN: 'No Token provided!',
+    INVALID: 'Token is invalid!',
+  },
 };
