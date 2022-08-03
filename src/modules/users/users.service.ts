@@ -121,7 +121,7 @@ export class UsersService {
   async getUserByRefreshToken(refreshToken: string): Promise<IUser> {
     const user: User = await prisma.user.findFirst({
       where: {
-        refreshToken: refreshToken,
+        refreshToken: refreshToken ? refreshToken : null,
       },
     });
 

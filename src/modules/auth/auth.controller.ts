@@ -2,7 +2,6 @@ import {
   Body,
   Controller,
   HttpCode,
-  Headers,
   HttpException,
   HttpStatus,
   Post,
@@ -16,6 +15,7 @@ import { comparePassword } from '../../../utils';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
 import { ITokens } from './auth.interface';
+import { RefreshTokenDto } from './dto/refreshToken.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -81,11 +81,11 @@ export class AuthController {
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
   async getRefreshToken(
-    @Headers('Authorization') authorization = '',
+    @Body(new ValidationPipe()) refreshToken: RefreshTokenDto,
   ): Promise<ITokens> {
-    const refreshToken: string = authorization.replace('Bearer ', '');
-
-    const user = await this.usersService.getUserByRefreshToken(refreshToken);
+    const user: IUser = await this.usersService.getUserByRefreshToken(
+      refreshToken.refreshToken,
+    );
 
     if (!user) {
       throw new HttpException(
