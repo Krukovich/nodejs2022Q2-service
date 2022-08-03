@@ -107,9 +107,3 @@ export class AuthController {
     return tokens;
   }
 }
-
-//TODO ADD LOGIC FOR REFRESH TOKEN
-// +30 Route /auth/signup implemented correctly, related logic is divided between controller and corresponding service
-// +40 Authentication is required for the access to all routes except /auth/signup, /auth/login, /doc and /.
-// +10 Separate module is implemented within application scope to check that all requests to all routes except mentioned above contain required JWT token
-// +30 Route /auth/refresh implemented correctly, related logic is divided between controller and corresponding service
