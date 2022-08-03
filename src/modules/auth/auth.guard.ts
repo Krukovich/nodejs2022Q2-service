@@ -14,27 +14,33 @@ export class AuthGuard implements CanActivate {
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
-    const bearer = context.switchToHttp().getRequest().headers.authorization;
+    const bearer: string = context.switchToHttp().getRequest()
+      .headers.authorization;
+    let guardFlag = false;
 
     if (bearer === '') {
+      guardFlag = false;
       throw new UnauthorizedException(EXCEPTION.AUTHORIZATION.NOT_TOKEN);
     }
 
+    const preparedToken: string = bearer.replace('Bearer ', '');
+
     jwt.verify(
-      bearer,
+      preparedToken,
       process.env.JWT_SECRET_KEY,
       null,
       (err: jwt.VerifyErrors, decoded: Jwt | undefined) => {
         if (decoded) {
-          return true;
+          guardFlag = true;
         }
 
         if (err) {
+          guardFlag = false;
           throw new UnauthorizedException(EXCEPTION.AUTHORIZATION.INVALID);
         }
       },
     );
 
-    return false;
+    return guardFlag;
   }
 }
