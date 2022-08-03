@@ -3,13 +3,13 @@ import {
   Controller,
   Delete,
   Get,
-  Headers,
   HttpCode,
   HttpException,
   HttpStatus,
   Param,
   Post,
   Put,
+  UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
 import { AlbumsService } from './albums.service';
@@ -20,8 +20,9 @@ import { FavoritesService } from '../favorites/favorites.service';
 import { TracksService } from '../tracks/tracks.service';
 import { IArtist } from '../artists/artists.interface';
 import { ArtistsService } from '../artists/artists.service';
-import { checkBearerToken, uuidValidateV4 } from '../../../utils';
+import { uuidValidateV4 } from '../../../utils';
 import { EXCEPTION } from '../../../constants';
+import { AuthGuard } from '../auth/auth.guard';
 
 @Controller('album')
 export class AlbumsController {
@@ -34,22 +35,15 @@ export class AlbumsController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  async getAllAlbums(
-    @Headers('Authorization') authorization = '',
-  ): Promise<IAlbum[]> {
-    checkBearerToken(authorization);
-
+  @UseGuards(AuthGuard)
+  async getAllAlbums(): Promise<IAlbum[]> {
     return await this.albumsService.getAllAlbums();
   }
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  async getAlbumById(
-    @Param('id') id: IAlbum['id'],
-    @Headers('Authorization') authorization = '',
-  ): Promise<IAlbum> {
-    checkBearerToken(authorization);
-
+  @UseGuards(AuthGuard)
+  async getAlbumById(@Param('id') id: IAlbum['id']): Promise<IAlbum> {
     if (!uuidValidateV4(id)) {
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
@@ -70,24 +64,20 @@ export class AlbumsController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
+  @UseGuards(AuthGuard)
   async createAlbum(
     @Body(new ValidationPipe()) createAlbum: CreateAlbumDto,
-    @Headers('Authorization') authorization = '',
   ): Promise<IAlbum> {
-    checkBearerToken(authorization);
-
     return await this.albumsService.createAlbum(createAlbum);
   }
 
   @Put(':id')
   @HttpCode(HttpStatus.OK)
+  @UseGuards(AuthGuard)
   async changeAlbum(
     @Param('id') id: IAlbum['id'],
     @Body(new ValidationPipe()) changeAlbums: ChangeAlbumDto,
-    @Headers('Authorization') authorization = '',
   ): Promise<IAlbum> {
-    checkBearerToken(authorization);
-
     if (!uuidValidateV4(id)) {
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
@@ -120,12 +110,8 @@ export class AlbumsController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async deleteAlbum(
-    @Param('id') id: IAlbum['id'],
-    @Headers('Authorization') authorization = '',
-  ): Promise<void> {
-    checkBearerToken(authorization);
-
+  @UseGuards(AuthGuard)
+  async deleteAlbum(@Param('id') id: IAlbum['id']): Promise<void> {
     if (!uuidValidateV4(id)) {
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,

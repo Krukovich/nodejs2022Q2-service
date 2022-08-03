@@ -3,21 +3,22 @@ import {
   Controller,
   Delete,
   Get,
-  Headers,
   HttpCode,
   HttpException,
   HttpStatus,
   Param,
   Post,
   Put,
+  UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
-import { checkBearerToken, uuidValidateV4 } from '../../../utils';
+import { uuidValidateV4 } from '../../../utils';
 import { EXCEPTION } from '../../../constants';
 import { ArtistsService } from './artists.service';
 import { IArtist } from './artists.interface';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { ChangeArtistDto } from './dto/change-artist.dto';
+import { AuthGuard } from '../auth/auth.guard';
 
 @Controller('artist')
 export class ArtistsController {
@@ -25,22 +26,15 @@ export class ArtistsController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  async getAllArtist(
-    @Headers('Authorization') authorization = '',
-  ): Promise<IArtist[]> {
-    checkBearerToken(authorization);
-
+  @UseGuards(AuthGuard)
+  async getAllArtist(): Promise<IArtist[]> {
     return this.artistService.getAllArtist();
   }
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  async getArtistById(
-    @Param('id') id: IArtist['id'],
-    @Headers('Authorization') authorization = '',
-  ): Promise<IArtist> {
-    checkBearerToken(authorization);
-
+  @UseGuards(AuthGuard)
+  async getArtistById(@Param('id') id: IArtist['id']): Promise<IArtist> {
     if (!uuidValidateV4(id)) {
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
@@ -61,24 +55,20 @@ export class ArtistsController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
+  @UseGuards(AuthGuard)
   async createArtist(
     @Body(new ValidationPipe()) createArtist: CreateArtistDto,
-    @Headers('Authorization') authorization = '',
   ): Promise<IArtist> {
-    checkBearerToken(authorization);
-
     return await this.artistService.createArtist(createArtist);
   }
 
   @Put(':id')
   @HttpCode(HttpStatus.OK)
+  @UseGuards(AuthGuard)
   async changeArtist(
     @Param('id') id: IArtist['id'],
     @Body(new ValidationPipe()) changeArtis: ChangeArtistDto,
-    @Headers('Authorization') authorization = '',
   ): Promise<IArtist> {
-    checkBearerToken(authorization);
-
     if (!uuidValidateV4(id)) {
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
@@ -100,12 +90,8 @@ export class ArtistsController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async deleteArtist(
-    @Param('id') id: IArtist['id'],
-    @Headers('Authorization') authorization = '',
-  ): Promise<void> {
-    checkBearerToken(authorization);
-
+  @UseGuards(AuthGuard)
+  async deleteArtist(@Param('id') id: IArtist['id']): Promise<void> {
     if (!uuidValidateV4(id)) {
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,

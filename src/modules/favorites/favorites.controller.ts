@@ -2,12 +2,12 @@ import {
   Controller,
   Delete,
   Get,
-  Headers,
   HttpCode,
   HttpException,
   HttpStatus,
   Param,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { IFavoritesResponse } from './favorites.interface';
 import { FavoritesService } from './favorites.service';
@@ -17,8 +17,9 @@ import { AlbumsService } from '../albums/albums.service';
 import { ArtistsService } from '../artists/artists.service';
 import { IAlbum } from '../albums/albums.interface';
 import { IArtist } from '../artists/artists.interface';
-import { checkBearerToken, uuidValidateV4 } from '../../../utils';
+import { uuidValidateV4 } from '../../../utils';
 import { EXCEPTION } from '../../../constants';
+import { AuthGuard } from '../auth/auth.guard';
 
 @Controller('favs')
 export class FavoritesController {
@@ -31,22 +32,15 @@ export class FavoritesController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  async getAllFavorites(
-    @Headers('Authorization') authorization = '',
-  ): Promise<IFavoritesResponse[]> {
-    checkBearerToken(authorization);
-
+  @UseGuards(AuthGuard)
+  async getAllFavorites(): Promise<IFavoritesResponse[]> {
     return await this.favoritesService.getAllFavorites();
   }
 
   @Post('track/:id')
   @HttpCode(HttpStatus.CREATED)
-  async createFavoritesTrack(
-    @Param('id') id: ITrack['id'],
-    @Headers('Authorization') authorization = '',
-  ): Promise<ITrack> {
-    checkBearerToken(authorization);
-
+  @UseGuards(AuthGuard)
+  async createFavoritesTrack(@Param('id') id: ITrack['id']): Promise<ITrack> {
     if (!uuidValidateV4(id)) {
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
@@ -68,12 +62,8 @@ export class FavoritesController {
 
   @Delete('track/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async deleteFavoriteTrack(
-    @Param('id') id: ITrack['id'],
-    @Headers('Authorization') authorization = '',
-  ): Promise<void> {
-    checkBearerToken(authorization);
-
+  @UseGuards(AuthGuard)
+  async deleteFavoriteTrack(@Param('id') id: ITrack['id']): Promise<void> {
     if (!uuidValidateV4(id)) {
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
@@ -95,12 +85,8 @@ export class FavoritesController {
 
   @Post('album/:id')
   @HttpCode(HttpStatus.CREATED)
-  async createFavoritesAlbum(
-    @Param('id') id: IAlbum['id'],
-    @Headers('Authorization') authorization = '',
-  ): Promise<IAlbum> {
-    checkBearerToken(authorization);
-
+  @UseGuards(AuthGuard)
+  async createFavoritesAlbum(@Param('id') id: IAlbum['id']): Promise<IAlbum> {
     if (!uuidValidateV4(id)) {
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
@@ -122,12 +108,8 @@ export class FavoritesController {
 
   @Delete('album/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async deleteFavoritesAlbum(
-    @Param('id') id: IAlbum['id'],
-    @Headers('Authorization') authorization = '',
-  ): Promise<void> {
-    checkBearerToken(authorization);
-
+  @UseGuards(AuthGuard)
+  async deleteFavoritesAlbum(@Param('id') id: IAlbum['id']): Promise<void> {
     if (!uuidValidateV4(id)) {
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
@@ -149,12 +131,10 @@ export class FavoritesController {
 
   @Post('artist/:id')
   @HttpCode(HttpStatus.CREATED)
+  @UseGuards(AuthGuard)
   async createFavoritesArtist(
     @Param('id') id: IArtist['id'],
-    @Headers('Authorization') authorization = '',
   ): Promise<IArtist> {
-    checkBearerToken(authorization);
-
     if (!uuidValidateV4(id)) {
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
@@ -176,12 +156,8 @@ export class FavoritesController {
 
   @Delete('artist/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async deleteFavoritesArtist(
-    @Param('id') id: IArtist['id'],
-    @Headers('Authorization') authorization = '',
-  ): Promise<void> {
-    checkBearerToken(authorization);
-
+  @UseGuards(AuthGuard)
+  async deleteFavoritesArtist(@Param('id') id: IArtist['id']): Promise<void> {
     if (!uuidValidateV4(id)) {
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,

@@ -11,29 +11,29 @@ services:
       - POSTGRES_DB=node_service
     ports:
       - "${POSTGRES_PORT}:${POSTGRES_PORT}"
-    volumes:
-      - nodejs2022q2-volume:/var/lib/postgresql/data
-    networks:
-      - nodejs2022q2-network
-  web:
-    container_name: node-service
-    platform: linux/x86_64
-    build:
-      context: .
-      dockerfile: ./docker/web/Dockerfile
-    ports:
-      - "${PORT}:${PORT}"
-    env_file:
-      - .env
-
-    networks:
-      - nodejs2022q2-network
-
-volumes:
-  nodejs2022q2-volume:
-    name: nodejs2022q2-volume
-
-networks:
-  nodejs2022q2-network:
-    name: nodejs2022q2-network
-    driver: bridge
+#    volumes:
+#      - nodejs2022q2-volume:/var/lib/postgresql/data
+#    networks:
+#      - nodejs2022q2-network
+#  web:
+#    container_name: node-service
+#    platform: linux/x86_64
+#    build:
+#      context: .
+#      dockerfile: ./docker/web/Dockerfile
+#    ports:
+#      - "${PORT}:${PORT}"
+#    env_file:
+#      - .env
+#
+#    networks:
+#      - nodejs2022q2-network
+#
+#volumes:
+#  nodejs2022q2-volume:
+#    name: nodejs2022q2-volume
+#
+#networks:
+#  nodejs2022q2-network:
+#    name: nodejs2022q2-network
+#    driver: bridge

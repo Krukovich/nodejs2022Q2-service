@@ -9,13 +9,12 @@ import {
   HttpException,
   HttpStatus,
   Param,
-  Headers,
   Post,
   Put,
   ValidationPipe,
   UseGuards,
 } from '@nestjs/common';
-import { checkBearerToken, uuidValidateV4 } from '../../../utils';
+import { uuidValidateV4 } from '../../../utils';
 import { EXCEPTION } from '../../../constants';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { ChangeTrackDto } from './dto/change-track.dto';
@@ -34,12 +33,8 @@ export class TracksController {
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  async getTrackById(
-    @Param('id') id: ITrack['id'],
-    @Headers('Authorization') authorization = '',
-  ): Promise<ITrack> {
-    checkBearerToken(authorization);
-
+  @UseGuards(AuthGuard)
+  async getTrackById(@Param('id') id: ITrack['id']): Promise<ITrack> {
     if (!uuidValidateV4(id)) {
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
@@ -60,24 +55,20 @@ export class TracksController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
+  @UseGuards(AuthGuard)
   async createTrack(
     @Body(new ValidationPipe()) createTrack: CreateTrackDto,
-    @Headers('Authorization') authorization = '',
   ): Promise<ITrack> {
-    checkBearerToken(authorization);
-
     return await this.trackService.createTrack(createTrack);
   }
 
   @Put(':id')
   @HttpCode(HttpStatus.OK)
+  @UseGuards(AuthGuard)
   async changeTrack(
     @Param('id') id: ITrack['id'],
     @Body(new ValidationPipe()) changeTrack: ChangeTrackDto,
-    @Headers('Authorization') authorization = '',
   ): Promise<ITrack> {
-    checkBearerToken(authorization);
-
     if (!uuidValidateV4(id)) {
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
@@ -99,12 +90,8 @@ export class TracksController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async deleteTrack(
-    @Param('id') id: ITrack['id'],
-    @Headers('Authorization') authorization = '',
-  ): Promise<void> {
-    checkBearerToken(authorization);
-
+  @UseGuards(AuthGuard)
+  async deleteTrack(@Param('id') id: ITrack['id']): Promise<void> {
     if (!uuidValidateV4(id)) {
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,

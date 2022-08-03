@@ -3,13 +3,13 @@ import {
   Controller,
   Delete,
   Get,
-  Headers,
   HttpCode,
   HttpException,
   HttpStatus,
   Param,
   Post,
   Put,
+  UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -18,11 +18,8 @@ import { IResponseUser, IUser } from './users.interface';
 import { EXCEPTION } from '../../../constants';
 import { UsersService } from './users.service';
 import { User } from '@prisma/client';
-import {
-  checkBearerToken,
-  comparePassword,
-  uuidValidateV4,
-} from '../../../utils';
+import { comparePassword, uuidValidateV4 } from '../../../utils';
+import { AuthGuard } from '../auth/auth.guard';
 
 @Controller('user')
 export class UsersController {
@@ -30,22 +27,15 @@ export class UsersController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  getAllUsers(
-    @Headers('Authorization') authorization = '',
-  ): Promise<IResponseUser[]> {
-    checkBearerToken(authorization);
-
+  @UseGuards(AuthGuard)
+  getAllUsers(): Promise<IResponseUser[]> {
     return this.usersService.getAllUsers();
   }
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  async getUserById(
-    @Param('id') id: IUser['id'],
-    @Headers('Authorization') authorization = '',
-  ): Promise<IResponseUser> {
-    checkBearerToken(authorization);
-
+  @UseGuards(AuthGuard)
+  async getUserById(@Param('id') id: IUser['id']): Promise<IResponseUser> {
     if (!uuidValidateV4(id)) {
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
@@ -72,12 +62,10 @@ export class UsersController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
+  @UseGuards(AuthGuard)
   async createUser(
     @Body(new ValidationPipe()) createUsers: CreateUserDto,
-    @Headers('Authorization') authorization = '',
   ): Promise<IResponseUser> {
-    checkBearerToken(authorization);
-
     const user: User = await this.usersService.createUser(createUsers);
 
     return {
@@ -91,13 +79,11 @@ export class UsersController {
 
   @Put(':id')
   @HttpCode(HttpStatus.OK)
+  @UseGuards(AuthGuard)
   async changeUser(
     @Param('id') id: IUser['id'],
     @Body(new ValidationPipe()) changeUser: ChangeUserDto,
-    @Headers('Authorization') authorization = '',
   ): Promise<IResponseUser> {
-    checkBearerToken(authorization);
-
     if (!uuidValidateV4(id)) {
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
@@ -126,12 +112,8 @@ export class UsersController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async deleteUser(
-    @Param('id') id: IUser['id'],
-    @Headers('Authorization') authorization = '',
-  ) {
-    checkBearerToken(authorization);
-
+  @UseGuards(AuthGuard)
+  async deleteUser(@Param('id') id: IUser['id']) {
     if (!uuidValidateV4(id)) {
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
