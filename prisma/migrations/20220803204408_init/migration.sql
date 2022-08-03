@@ -6,6 +6,7 @@ CREATE TABLE "users" (
     "version" INTEGER NOT NULL DEFAULT 1,
     "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ(3) NOT NULL,
+    "refresh_token" VARCHAR(256),
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("user_id")
 );
