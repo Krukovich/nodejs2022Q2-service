@@ -19,14 +19,10 @@ import { EXCEPTION } from '../../../constants';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { ChangeTrackDto } from './dto/change-track.dto';
 import { AuthGuard } from '../auth/auth.guard';
-import { ApplicationLogger } from '../../../common/logger.service';
 
 @Controller('track')
 export class TracksController {
-  constructor(
-    private readonly trackService: TracksService,
-    private applicationLogger: ApplicationLogger,
-  ) {}
+  constructor(private readonly trackService: TracksService) {}
 
   @Get()
   @HttpCode(HttpStatus.OK)
@@ -40,7 +36,6 @@ export class TracksController {
   @UseGuards(AuthGuard)
   async getTrackById(@Param('id') id: ITrack['id']): Promise<ITrack> {
     if (!uuidValidateV4(id)) {
-      this.applicationLogger.error('error');
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
         HttpStatus.BAD_REQUEST,
