@@ -103,4 +103,39 @@ export class UsersService {
       },
     });
   }
+
+  async updateUserRefreshToken(
+    id: IUser['id'],
+    refreshToken: string,
+  ): Promise<void> {
+    await prisma.user.update({
+      where: {
+        id: id,
+      },
+      data: {
+        refreshToken: refreshToken,
+      },
+    });
+  }
+
+  async getUserByRefreshToken(refreshToken: string): Promise<IUser> {
+    const user: User = await prisma.user.findFirst({
+      where: {
+        refreshToken: refreshToken,
+      },
+    });
+
+    if (!user) {
+      return null;
+    }
+
+    return {
+      id: user.id,
+      login: user.login,
+      password: user.password,
+      version: user.version,
+      createdAt: new Date(user.createdAt).valueOf(),
+      updatedAt: new Date(user.updatedAt).valueOf(),
+    };
+  }
 }

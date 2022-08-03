@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   HttpCode,
+  Headers,
   HttpException,
   HttpStatus,
   Post,
@@ -51,7 +52,7 @@ export class AuthController {
     if (!user) {
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.NOT_FOUND,
-        HttpStatus.NOT_FOUND,
+        HttpStatus.FORBIDDEN,
       );
     }
 
@@ -62,10 +63,48 @@ export class AuthController {
       );
     }
 
-    return this.authService.generateTokens({
+    const tokens: ITokens = this.authService.generateTokens({
       id: user.id,
       login: user.login,
     });
+
+    if (tokens) {
+      await this.usersService.updateUserRefreshToken(
+        user.id,
+        tokens.refreshToken,
+      );
+    }
+
+    return tokens;
+  }
+
+  @Post('refresh')
+  @HttpCode(HttpStatus.OK)
+  async getRefreshToken(
+    @Headers('Authorization') authorization = '',
+  ): Promise<ITokens> {
+    const refreshToken: string = authorization.replace('Bearer ', '');
+
+    const user = await this.usersService.getUserByRefreshToken(refreshToken);
+
+    if (!user) {
+      throw new HttpException(
+        EXCEPTION.BAD_REQUEST.NOT_FOUND,
+        HttpStatus.FORBIDDEN,
+      );
+    }
+
+    const tokens: ITokens = this.authService.generateTokens({
+      id: user.id,
+      login: user.login,
+    });
+
+    await this.usersService.updateUserRefreshToken(
+      user.id,
+      tokens.refreshToken,
+    );
+
+    return tokens;
   }
 }
 
