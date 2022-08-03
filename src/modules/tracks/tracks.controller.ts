@@ -13,11 +13,13 @@ import {
   Post,
   Put,
   ValidationPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { checkBearerToken, uuidValidateV4 } from '../../../utils';
 import { EXCEPTION } from '../../../constants';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { ChangeTrackDto } from './dto/change-track.dto';
+import { AuthGuard } from '../auth/auth.guard';
 
 @Controller('track')
 export class TracksController {
@@ -25,11 +27,8 @@ export class TracksController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  async getAllTracks(
-    @Headers('Authorization') authorization = '',
-  ): Promise<ITrack[]> {
-    checkBearerToken(authorization);
-
+  @UseGuards(AuthGuard)
+  async getAllTracks(): Promise<ITrack[]> {
     return await this.trackService.getAllTracks();
   }
 
