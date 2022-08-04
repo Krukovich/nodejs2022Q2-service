@@ -13,7 +13,7 @@ import { TracksController } from './modules/tracks/tracks.controller';
 import { AlbumsController } from './modules/albums/albums.controller';
 import { ArtistsController } from './modules/artists/artists.controller';
 import { FavoritesController } from './modules/favorites/favorites.controller';
-import { AllExceptionsFilter } from '../common/logger.service';
+import { AllExceptionsFilter } from '../common/exceptionsFilter.service';
 
 @Module({
   imports: [
