@@ -6,13 +6,15 @@ import { readFile } from 'fs/promises';
 import { parse } from 'yaml';
 import { join } from 'path';
 import { ApplicationLogger } from '../common/loggerService.service';
+import { prepareLoggerVariables } from '../utils';
 
 const PORT: string | number = process.env.PORT || 4000;
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    logger: new ApplicationLogger(),
+    logger: new ApplicationLogger(prepareLoggerVariables()),
   });
+
   app.useGlobalPipes(
     new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }),
   );

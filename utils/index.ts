@@ -3,7 +3,7 @@ import { validate as uuidValidate, version as uuidVersion } from 'uuid';
 import { EXCEPTION, FIRST_ITEM, HASH_LEVEL, UUID_VERSION } from '../constants';
 import { HttpException } from '@nestjs/common';
 import * as fs from 'fs';
-import { ErrorResponse } from '../type';
+import { ErrorResponse, Logs } from '../type';
 import e from 'express';
 
 export const uuidValidateV4 = (uuid: string): boolean => {
@@ -100,4 +100,15 @@ export const checkLogFileSize = (fileName: string): number => {
   } catch (e) {
     console.log(EXCEPTION.LOG_FILE.ERROR);
   }
+};
+
+export const prepareLoggerVariables = (): string[] => {
+  const logVariables = [];
+  const logs = Array(Number(process.env.NEST_LOGER_LEVEL)).fill('_');
+
+  logs.forEach((_, index: number): void => {
+    logVariables.push(Logs[index]);
+  });
+
+  return logVariables;
 };
