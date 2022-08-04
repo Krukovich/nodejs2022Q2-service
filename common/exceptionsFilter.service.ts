@@ -6,15 +6,17 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
-import * as fs from 'fs';
+import { EXCEPTION } from '../constants';
+import { HttpArgumentsHost } from '@nestjs/common/interfaces';
+import { prepareStringForLog, writeLog } from '../utils';
+import { ErrorResponse } from '../type';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
   catch(exception: unknown, host: ArgumentsHost) {
-    const ctx = host.switchToHttp();
+    const ctx: HttpArgumentsHost = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
-
     let status: HttpStatus;
     let errorMessage: string;
 
@@ -24,7 +26,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
       errorMessage = errorResponse.error || exception.message;
     } else {
       status = HttpStatus.INTERNAL_SERVER_ERROR;
-      errorMessage = 'Critical internal server error occurred!';
+      errorMessage = EXCEPTION.INTERNAL_SERVER_ERROR.ERROR;
     }
 
     const errorResponse = this.getErrorResponse(status, errorMessage, request);
@@ -46,31 +48,14 @@ export class AllExceptionsFilter implements ExceptionFilter {
   });
 
   private getErrorLog = (
-    errorResponse: any,
+    errorResponse: ErrorResponse,
     request: Request,
     exception: unknown,
   ): string => {
-    const { method, url } = request;
-    return `Response Code: ${
-      errorResponse.statusCode
-    } - Method: ${method} - URL: ${url} - TimeStamp: ${
-      errorResponse.timeStamp
-    }\n
-    ${
-      exception instanceof HttpException ? exception.stack : errorResponse.error
-    }\n`;
+    return prepareStringForLog(errorResponse, request, exception);
   };
 
   private writeErrorLogToFile = (errorLog: string): void => {
-    fs.appendFile(
-      'error.log',
-      errorLog,
-      'utf8',
-      (err: NodeJS.ErrnoException) => {
-        if (err) throw err;
-      },
-    );
+    writeLog(errorLog);
   };
 }
-
-//TODO REFACTOR THIS FILE

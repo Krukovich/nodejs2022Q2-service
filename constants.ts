@@ -20,4 +20,7 @@ export const EXCEPTION = {
     NOT_TOKEN: 'No Token provided!',
     INVALID: 'Token is invalid!',
   },
+  INTERNAL_SERVER_ERROR: {
+    ERROR: 'Critical internal server error occurred!',
+  },
 };
