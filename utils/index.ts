@@ -1,6 +1,6 @@
 import * as bcrypt from 'bcrypt';
 import { validate as uuidValidate, version as uuidVersion } from 'uuid';
-import { FIRST_ITEM, HASH_LEVEL, UUID_VERSION } from '../constants';
+import { EXCEPTION, FIRST_ITEM, HASH_LEVEL, UUID_VERSION } from '../constants';
 import { HttpException } from '@nestjs/common';
 import * as fs from 'fs';
 import { ErrorResponse } from '../type';
@@ -54,12 +54,50 @@ export const prepareStringForLog = (
 };
 
 export const writeLog = (errorLog: string): void => {
-  fs.appendFile(
-    process.env.LOG_FILE_NAME,
-    errorLog,
-    'utf8',
-    (err: NodeJS.ErrnoException) => {
-      if (err) throw err;
-    },
-  );
+  const logsFolder: string = process.env.LOGS_FOLDER;
+  const logFileSize = Number(process.env.LOG_FILE_SIZE);
+
+  fs.readdir(logsFolder, (err: NodeJS.ErrnoException, files: string[]) => {
+    if (err) {
+      const fullPath: string = createNewLogsPath(logsFolder);
+      createFolder(logsFolder);
+      writeLogInFile(fullPath, errorLog);
+    }
+    (files || []).forEach((file: string) => {
+      const fileSize: number = checkLogFileSize(`${logsFolder}/${file}`);
+
+      if (fileSize < logFileSize) {
+        writeLogInFile(`${logsFolder}/${file}`, errorLog);
+      } else {
+        const fullPath: string = createNewLogsPath(logsFolder);
+        writeLogInFile(fullPath, errorLog);
+      }
+    });
+  });
+};
+
+export const createNewLogsPath = (logsFolder: string): string => {
+  const logFileName: number = new Date().valueOf();
+  return `${logsFolder}/${logFileName}.log`;
+};
+
+export const writeLogInFile = (logName: string, errorLog: string) => {
+  fs.appendFile(logName, errorLog, 'utf8', (err: NodeJS.ErrnoException) => {
+    if (err) throw err;
+  });
+};
+
+export const createFolder = (logsFolder: string): void => {
+  fs.mkdir(logsFolder, { recursive: true }, (err: NodeJS.ErrnoException) => {
+    if (err) throw err;
+  });
+};
+
+export const checkLogFileSize = (fileName: string): number => {
+  try {
+    const stats: fs.Stats = fs.statSync(fileName);
+    return stats.size;
+  } catch (e) {
+    console.log(EXCEPTION.LOG_FILE.ERROR);
+  }
 };

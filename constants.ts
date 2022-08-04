@@ -23,4 +23,7 @@ export const EXCEPTION = {
   INTERNAL_SERVER_ERROR: {
     ERROR: 'Critical internal server error occurred!',
   },
+  LOG_FILE: {
+    ERROR: 'File not found',
+  },
 };
