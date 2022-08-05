@@ -112,3 +112,14 @@ export const prepareLoggerVariables = (): string[] => {
 
   return logVariables;
 };
+
+export const addException = (): void => {
+  process
+    .on('unhandledRejection', () => {
+      process.stdout.write('Unhandled Rejection at Promise');
+    })
+    .on('uncaughtException', () => {
+      process.stdout.write('Uncaught Exception thrown');
+      process.exit(1);
+    });
+};
