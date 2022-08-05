@@ -1,9 +1,10 @@
 import {
-  ArgumentsHost,
   Catch,
+  ArgumentsHost,
   ExceptionFilter,
   HttpException,
   HttpStatus,
+  Logger,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { EXCEPTION } from '../constants';
@@ -13,6 +14,8 @@ import { ErrorResponse } from '../type';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
+  private readonly logger: Logger = new Logger(AllExceptionsFilter.name);
+
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx: HttpArgumentsHost = host.switchToHttp();
     const response = ctx.getResponse<Response>();
@@ -31,6 +34,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
     const errorResponse = this.getErrorResponse(status, errorMessage, request);
     const errorLog = this.getErrorLog(errorResponse, request, exception);
+    this.logger.error(errorLog);
     this.writeErrorLogToFile(errorLog);
     response.status(status).json(errorResponse);
   }

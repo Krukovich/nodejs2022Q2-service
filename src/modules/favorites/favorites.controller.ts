@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpException,
   HttpStatus,
+  Logger,
   Param,
   Post,
   UseGuards,
@@ -23,6 +24,8 @@ import { AuthGuard } from '../auth/auth.guard';
 
 @Controller('favs')
 export class FavoritesController {
+  private readonly logger: Logger = new Logger(FavoritesController.name);
+
   constructor(
     private readonly favoritesService: FavoritesService,
     private readonly trackService: TracksService,
@@ -42,6 +45,7 @@ export class FavoritesController {
   @UseGuards(AuthGuard)
   async createFavoritesTrack(@Param('id') id: ITrack['id']): Promise<ITrack> {
     if (!uuidValidateV4(id)) {
+      this.logger.warn(EXCEPTION.BAD_REQUEST.BAD_UUID);
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
         HttpStatus.BAD_REQUEST,
@@ -51,6 +55,7 @@ export class FavoritesController {
     const track: ITrack = await this.trackService.getTrackById(id);
 
     if (!track) {
+      this.logger.warn(EXCEPTION.UNPROCESSABLE_ENTITY.NOT_FOUND);
       throw new HttpException(
         EXCEPTION.UNPROCESSABLE_ENTITY.NOT_FOUND,
         HttpStatus.UNPROCESSABLE_ENTITY,
@@ -65,6 +70,7 @@ export class FavoritesController {
   @UseGuards(AuthGuard)
   async deleteFavoriteTrack(@Param('id') id: ITrack['id']): Promise<void> {
     if (!uuidValidateV4(id)) {
+      this.logger.warn(EXCEPTION.BAD_REQUEST.BAD_UUID);
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
         HttpStatus.BAD_REQUEST,
@@ -74,6 +80,7 @@ export class FavoritesController {
     const track: ITrack = await this.trackService.getTrackById(id);
 
     if (!track) {
+      this.logger.warn(EXCEPTION.BAD_REQUEST.NOT_FOUND);
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.NOT_FOUND,
         HttpStatus.NOT_FOUND,
@@ -88,6 +95,7 @@ export class FavoritesController {
   @UseGuards(AuthGuard)
   async createFavoritesAlbum(@Param('id') id: IAlbum['id']): Promise<IAlbum> {
     if (!uuidValidateV4(id)) {
+      this.logger.warn(EXCEPTION.BAD_REQUEST.BAD_UUID);
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
         HttpStatus.BAD_REQUEST,
@@ -97,6 +105,7 @@ export class FavoritesController {
     const album: IAlbum = await this.albumsService.getAlbumById(id);
 
     if (!album) {
+      this.logger.warn(EXCEPTION.UNPROCESSABLE_ENTITY.NOT_FOUND);
       throw new HttpException(
         EXCEPTION.UNPROCESSABLE_ENTITY.NOT_FOUND,
         HttpStatus.UNPROCESSABLE_ENTITY,
@@ -111,6 +120,7 @@ export class FavoritesController {
   @UseGuards(AuthGuard)
   async deleteFavoritesAlbum(@Param('id') id: IAlbum['id']): Promise<void> {
     if (!uuidValidateV4(id)) {
+      this.logger.warn(EXCEPTION.BAD_REQUEST.BAD_UUID);
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
         HttpStatus.BAD_REQUEST,
@@ -120,6 +130,7 @@ export class FavoritesController {
     const album: IAlbum = await this.albumsService.getAlbumById(id);
 
     if (!album) {
+      this.logger.warn(EXCEPTION.BAD_REQUEST.NOT_FOUND);
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.NOT_FOUND,
         HttpStatus.NOT_FOUND,
@@ -136,6 +147,7 @@ export class FavoritesController {
     @Param('id') id: IArtist['id'],
   ): Promise<IArtist> {
     if (!uuidValidateV4(id)) {
+      this.logger.warn(EXCEPTION.BAD_REQUEST.BAD_UUID);
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
         HttpStatus.BAD_REQUEST,
@@ -145,6 +157,7 @@ export class FavoritesController {
     const artist: IArtist = await this.artistsService.getArtistById(id);
 
     if (!artist) {
+      this.logger.warn(EXCEPTION.UNPROCESSABLE_ENTITY.NOT_FOUND);
       throw new HttpException(
         EXCEPTION.UNPROCESSABLE_ENTITY.NOT_FOUND,
         HttpStatus.UNPROCESSABLE_ENTITY,
@@ -159,6 +172,7 @@ export class FavoritesController {
   @UseGuards(AuthGuard)
   async deleteFavoritesArtist(@Param('id') id: IArtist['id']): Promise<void> {
     if (!uuidValidateV4(id)) {
+      this.logger.warn(EXCEPTION.BAD_REQUEST.BAD_UUID);
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
         HttpStatus.BAD_REQUEST,
@@ -168,6 +182,7 @@ export class FavoritesController {
     const artist: IArtist = await this.artistsService.getArtistById(id);
 
     if (!artist) {
+      this.logger.warn(EXCEPTION.BAD_REQUEST.NOT_FOUND);
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.NOT_FOUND,
         HttpStatus.NOT_FOUND,

@@ -13,6 +13,7 @@ import {
   Put,
   ValidationPipe,
   UseGuards,
+  Logger,
 } from '@nestjs/common';
 import { uuidValidateV4 } from '../../../utils';
 import { EXCEPTION } from '../../../constants';
@@ -22,6 +23,8 @@ import { AuthGuard } from '../auth/auth.guard';
 
 @Controller('track')
 export class TracksController {
+  private readonly logger: Logger = new Logger(TracksController.name);
+
   constructor(private readonly trackService: TracksService) {}
 
   @Get()
@@ -36,6 +39,7 @@ export class TracksController {
   @UseGuards(AuthGuard)
   async getTrackById(@Param('id') id: ITrack['id']): Promise<ITrack> {
     if (!uuidValidateV4(id)) {
+      this.logger.warn(EXCEPTION.BAD_REQUEST.BAD_UUID);
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
         HttpStatus.BAD_REQUEST,
@@ -44,6 +48,7 @@ export class TracksController {
     const track: ITrack = await this.trackService.getTrackById(id);
 
     if (!track) {
+      this.logger.warn(EXCEPTION.BAD_REQUEST.NOT_FOUND);
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.NOT_FOUND,
         HttpStatus.NOT_FOUND,
@@ -70,6 +75,7 @@ export class TracksController {
     @Body(new ValidationPipe()) changeTrack: ChangeTrackDto,
   ): Promise<ITrack> {
     if (!uuidValidateV4(id)) {
+      this.logger.warn(EXCEPTION.BAD_REQUEST.BAD_UUID);
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
         HttpStatus.BAD_REQUEST,
@@ -79,6 +85,7 @@ export class TracksController {
     const track: ITrack = await this.trackService.getTrackById(id);
 
     if (!track) {
+      this.logger.warn(EXCEPTION.BAD_REQUEST.NOT_FOUND);
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.NOT_FOUND,
         HttpStatus.NOT_FOUND,
@@ -93,6 +100,7 @@ export class TracksController {
   @UseGuards(AuthGuard)
   async deleteTrack(@Param('id') id: ITrack['id']): Promise<void> {
     if (!uuidValidateV4(id)) {
+      this.logger.warn(EXCEPTION.BAD_REQUEST.BAD_UUID);
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
         HttpStatus.BAD_REQUEST,
@@ -102,6 +110,7 @@ export class TracksController {
     const track: ITrack = await this.trackService.getTrackById(id);
 
     if (!track) {
+      this.logger.warn(EXCEPTION.BAD_REQUEST.NOT_FOUND);
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.NOT_FOUND,
         HttpStatus.NOT_FOUND,

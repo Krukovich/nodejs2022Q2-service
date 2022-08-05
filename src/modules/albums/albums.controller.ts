@@ -6,6 +6,7 @@ import {
   HttpCode,
   HttpException,
   HttpStatus,
+  Logger,
   Param,
   Post,
   Put,
@@ -26,6 +27,8 @@ import { AuthGuard } from '../auth/auth.guard';
 
 @Controller('album')
 export class AlbumsController {
+  private readonly logger: Logger = new Logger(AlbumsController.name);
+
   constructor(
     private readonly albumsService: AlbumsService,
     private readonly favoritesService: FavoritesService,
@@ -45,6 +48,7 @@ export class AlbumsController {
   @UseGuards(AuthGuard)
   async getAlbumById(@Param('id') id: IAlbum['id']): Promise<IAlbum> {
     if (!uuidValidateV4(id)) {
+      this.logger.warn(EXCEPTION.BAD_REQUEST.BAD_UUID);
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
         HttpStatus.BAD_REQUEST,
@@ -53,6 +57,7 @@ export class AlbumsController {
     const album: IAlbum = await this.albumsService.getAlbumById(id);
 
     if (!album) {
+      this.logger.warn(EXCEPTION.BAD_REQUEST.NOT_FOUND);
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.NOT_FOUND,
         HttpStatus.NOT_FOUND,
@@ -79,6 +84,7 @@ export class AlbumsController {
     @Body(new ValidationPipe()) changeAlbums: ChangeAlbumDto,
   ): Promise<IAlbum> {
     if (!uuidValidateV4(id)) {
+      this.logger.warn(EXCEPTION.BAD_REQUEST.BAD_UUID);
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
         HttpStatus.BAD_REQUEST,
@@ -88,6 +94,7 @@ export class AlbumsController {
     const album: IAlbum = await this.albumsService.getAlbumById(id);
 
     if (!album) {
+      this.logger.warn(EXCEPTION.BAD_REQUEST.NOT_FOUND);
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.NOT_FOUND,
         HttpStatus.NOT_FOUND,
@@ -99,6 +106,7 @@ export class AlbumsController {
     );
 
     if (!artis) {
+      this.logger.warn(EXCEPTION.BAD_REQUEST.NOT_FOUND);
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.NOT_FOUND,
         HttpStatus.NOT_FOUND,
@@ -113,6 +121,7 @@ export class AlbumsController {
   @UseGuards(AuthGuard)
   async deleteAlbum(@Param('id') id: IAlbum['id']): Promise<void> {
     if (!uuidValidateV4(id)) {
+      this.logger.warn(EXCEPTION.BAD_REQUEST.BAD_UUID);
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
         HttpStatus.BAD_REQUEST,
@@ -122,6 +131,7 @@ export class AlbumsController {
     const album: IAlbum = await this.albumsService.getAlbumById(id);
 
     if (!album) {
+      this.logger.warn(EXCEPTION.BAD_REQUEST.NOT_FOUND);
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.NOT_FOUND,
         HttpStatus.NOT_FOUND,

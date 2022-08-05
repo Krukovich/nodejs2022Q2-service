@@ -6,6 +6,7 @@ import {
   HttpCode,
   HttpException,
   HttpStatus,
+  Logger,
   Param,
   Post,
   Put,
@@ -23,6 +24,8 @@ import { AuthGuard } from '../auth/auth.guard';
 
 @Controller('user')
 export class UsersController {
+  private readonly logger: Logger = new Logger(UsersController.name);
+
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
@@ -37,6 +40,7 @@ export class UsersController {
   @UseGuards(AuthGuard)
   async getUserById(@Param('id') id: IUser['id']): Promise<IResponseUser> {
     if (!uuidValidateV4(id)) {
+      this.logger.warn(EXCEPTION.BAD_REQUEST.BAD_UUID);
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
         HttpStatus.BAD_REQUEST,
@@ -45,6 +49,7 @@ export class UsersController {
     const user: IUser = await this.usersService.getUserById(id);
 
     if (!user) {
+      this.logger.warn(EXCEPTION.BAD_REQUEST.NOT_FOUND);
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.NOT_FOUND,
         HttpStatus.NOT_FOUND,
@@ -85,6 +90,7 @@ export class UsersController {
     @Body(new ValidationPipe()) changeUser: ChangeUserDto,
   ): Promise<IResponseUser> {
     if (!uuidValidateV4(id)) {
+      this.logger.warn(EXCEPTION.BAD_REQUEST.BAD_UUID);
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
         HttpStatus.BAD_REQUEST,
@@ -94,6 +100,7 @@ export class UsersController {
     const user: IUser = await this.usersService.getUserById(id);
 
     if (!user) {
+      this.logger.warn(EXCEPTION.BAD_REQUEST.NOT_FOUND);
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.NOT_FOUND,
         HttpStatus.NOT_FOUND,
@@ -101,6 +108,7 @@ export class UsersController {
     }
 
     if (!(await comparePassword(changeUser.oldPassword, user.password))) {
+      this.logger.warn(EXCEPTION.FORBIDDEN.BAD_PASSWORD);
       throw new HttpException(
         EXCEPTION.FORBIDDEN.BAD_PASSWORD,
         HttpStatus.FORBIDDEN,
@@ -115,6 +123,7 @@ export class UsersController {
   @UseGuards(AuthGuard)
   async deleteUser(@Param('id') id: IUser['id']) {
     if (!uuidValidateV4(id)) {
+      this.logger.warn(EXCEPTION.BAD_REQUEST.BAD_UUID);
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.BAD_UUID,
         HttpStatus.BAD_REQUEST,
@@ -124,6 +133,7 @@ export class UsersController {
     const user: IUser = await this.usersService.getUserById(id);
 
     if (!user) {
+      this.logger.warn(EXCEPTION.BAD_REQUEST.NOT_FOUND);
       throw new HttpException(
         EXCEPTION.BAD_REQUEST.NOT_FOUND,
         HttpStatus.NOT_FOUND,
