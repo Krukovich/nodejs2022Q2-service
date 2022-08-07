@@ -6,9 +6,9 @@ services:
       context: .
       dockerfile: ./docker/db/Dockerfile
     environment:
-     - POSTGRES_PASSWORD=node_service_password
-     - POSTGRES_USER=node_service_user
-     - POSTGRES_DB=node_service
+      - POSTGRES_PASSWORD=node_service_password
+      - POSTGRES_USER=node_service_user
+      - POSTGRES_DB=node_service
     ports:
       - "${POSTGRES_PORT}:${POSTGRES_PORT}"
     volumes:
