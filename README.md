@@ -1,5 +1,9 @@
 # Home Library Service
 
+## logs handler
+The application implements error logging, you can run the application and send a no valid request, for example, with the wrong ID, after which the `logs` folder is created in the application, you can set it in the `env` variable and the file with an error will be written there, after the file becomes more than `default 20000 KB` created new file you can also change this size in `env` variable
+
+
 ## Docker Compose
 
 - Docker hub image - <a href="https://hub.docker.com/repository/docker/shaht3r/nodejs2022q2" target="_blank">nodejs2022q2</a>
